@@ -1,0 +1,59 @@
+/* printStyles.css */
+  .print-margin-top {
+    margin-top: 0.5px; /* ajusta este valor según tus necesidades */
+  }
+  @media (min-width: 768px) and (max-width: 1075px) {
+    .scrollable-container {
+      overflow: auto;
+    }
+  }
+  
+  @media print {
+  body {
+    margin: 4;
+    padding: 7;
+    
+  }
+
+  .print-container {
+    width: 8.5in;
+    height: 11in;
+    margin: 0 auto;
+    padding: 1in; /* Ajusta los márgenes según sea necesario */
+    box-sizing: border-box;
+    font-size: 12px; /* Ajusta el tamaño de la fuente */
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  
+  .print-margin-top {
+    margin-top: 20px; /* Ajusta según sea necesario */
+  }
+
+  .print-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .print-table td,
+  .print-table th {
+    padding: 8px;
+    /* border: 1px solid black; */
+  }
+
+  .text-justify {
+    text-align: justify;
+  }
+
+  .border-box {
+    border: 0px solid black;
+  }
+
+  .negrilla {
+    font-weight: bold;
+  }
+}
+body {
+ padding: 20px; /* Define un margen de 20px para todo el cuerpo del documento */
+}
