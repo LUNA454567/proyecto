@@ -9,8 +9,7 @@ import OkCancelButton from '../buttons/buttonOkCan';
 import { Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
 
-
-export default function FormPropsTextFieldsFinaval({handleCancel}) {
+export default function FormPropsTextFieldsFinaval({ handleCancel }) {
   //  wallet email
   const [walletEmail, setWalletEmail] = useState('');
 
@@ -43,7 +42,7 @@ export default function FormPropsTextFieldsFinaval({handleCancel}) {
   // cellphone
   const [cellphone, setCellphone] = useState('');
   const handleCellphoneChange = (event) => {
-    const value = event.target.value.replace(/\D/g, ''); 
+    const value = event.target.value.replace(/\D/g, '');
     setCellphone(value);
   };
 
@@ -54,16 +53,16 @@ export default function FormPropsTextFieldsFinaval({handleCancel}) {
     setEmail(value);
   };
 
-    // buttons ok cancel 
-    const [message, setMessage] = useState('');
+  // buttons ok cancel
+  const [message, setMessage] = useState('');
 
-    const handleAccept = () => {
-      setMessage('Accepted');
-    };
-  
-    // const handleCancel = () => {
-    //   setMessage('Canceled');
-    // };
+  const handleAccept = () => {
+    setMessage('Accepted');
+  };
+
+  // const handleCancel = () => {
+  //   setMessage('Canceled');
+  // };
   // close modal by button
   // const [open, setOpen] = useState(true); // Destructuring of state and function to update it
 
@@ -172,10 +171,9 @@ export default function FormPropsTextFieldsFinaval({handleCancel}) {
             style: { paddingRight: '0.5rem' }, // Add space to the right of the input
           }}
         />
-        
+
         {/* buttons */}
         <Grid item xs={12}>
-          {' '}
           <Box
             sx={{
               marginTop: '20px',
@@ -183,28 +181,37 @@ export default function FormPropsTextFieldsFinaval({handleCancel}) {
               display: 'flex',
             }}
           >
-            <Link to="/viewReplaceFormConstanceFinaval">
-              <Button
-                sx={{
-                  mb: 2,
-                  bgcolor: 'green',
-                  color: 'white',
-                  alignItems: 'center',
-                  marginTop: '0px',
-                  marginLeft: '80px',
-                  width: '100px',
-                  height: '40px',
-                  fontSize: '12px',
-                  textAlign: 'center',
-                  '&:hover': {
-                    bgcolor: 'green', // Mantiene el mismo color de fondo cuando se pasa el mouse
-                    color: 'white', // Mantiene el mismo color de texto cuando se pasa el mouse
-                  },
-                }}
-              >
-                ACEPTAR
-              </Button>
-            </Link>
+            <Button
+              type="submit"
+              variant="outlined"
+              disabled={
+                walletEmail === '' ||
+                whatsappNumber === '' ||
+                name === '' ||
+                id === '' ||
+                cellphone === '' ||
+                email === ''
+              }
+              href="/viewReplaceFormConstanceFinaval"
+              sx={{
+                mb: 2,
+                bgcolor: 'green',
+                color: 'white',
+                alignItems: 'center',
+                marginTop: '0px',
+                marginLeft: '80px',
+                width: '100px',
+                height: '40px',
+                fontSize: '12px',
+                textAlign: 'center',
+                '&:hover': {
+                  bgcolor: 'green', // Mantiene el mismo color de fondo cuando se pasa el mouse
+                  color: 'white', // Mantiene el mismo color de texto cuando se pasa el mouse
+                },
+              }}
+            >
+              <b>ACEPTAR</b>
+            </Button>
             <OkCancelButton onCancel={handleCancel} />
           </Box>
         </Grid>

@@ -9,7 +9,6 @@ import OkCancelButton from '../buttons/buttonOkCan';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
 
 export default function FormPropsTextFieldsDate({ handleCancel }) {
@@ -21,10 +20,10 @@ export default function FormPropsTextFieldsDate({ handleCancel }) {
   };
 
   // CURRENT DATE
-  const [currentDate, setCurrentDate] = useState('');
-  const handleCurrentDateChange = (event) => {
-    const value = event.target.value.replace(/[^A-Za-z0-9\s@.]+/g, '');
-    setCurrentDate(value);
+  const [currentDate, setCurrentDate] = useState(null); // Cambiado a null
+
+  const handleCurrentDateChange = (newValue) => {
+    setCurrentDate(newValue); // Actualiza directamente el estado con el nuevo valor de fecha
   };
 
   // CURRENT PAYMENT DAY
@@ -76,9 +75,7 @@ export default function FormPropsTextFieldsDate({ handleCancel }) {
     setClientEmail(value);
   };
 
-  // DATEPICKER
-  const [selectedDate, setSelectedDate] = useState(null);
-
+  // Accept button handler
   const handleAccept = () => {
     console.log('Accepted');
   };
@@ -87,7 +84,7 @@ export default function FormPropsTextFieldsDate({ handleCancel }) {
     <Box
       component="form"
       sx={{
-        '& .MuiTextField-root': { m: 1, width: '100%', height: '3rem' }, // Adjusts the height of the TextFields
+        '& .MuiTextField-root': { m: 1, width: '100%', height: '3rem' },
       }}
       noValidate
       autoComplete="off"
@@ -106,15 +103,6 @@ export default function FormPropsTextFieldsDate({ handleCancel }) {
               variant="standard"
               sx={{ mb: 2 }}
             />
-            <TextField
-              required
-              value={currentDate}
-              onChange={handleCurrentDateChange}
-              name="currentDate"
-              label="Fecha Actual:"
-              variant="standard"
-              sx={{ mb: 2 }}
-            />
 
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <Box
@@ -126,24 +114,36 @@ export default function FormPropsTextFieldsDate({ handleCancel }) {
                 }}
               >
                 <DatePicker
-                  label="Día de Pago Actual:"
-                  value={currentPaymentDay}
-                  onChange={handleCurrentPaymentDayChange}
+                  label="Fecha Actual:"
+                  value={currentDate}
+                  onChange={handleCurrentDateChange} // El evento pasa directamente el nuevo valor de fecha
                   renderInput={(params) => (
                     <TextField {...params} variant="standard" />
                   )}
                 />
               </Box>
             </LocalizationProvider>
+
+            <TextField
+              required
+              value={currentPaymentDay}
+              onChange={handleCurrentPaymentDayChange}
+              name="currentPaymentDay"
+              label="Día Pago Actual:"
+              variant="standard"
+              sx={{ mb: 2 }}
+            />
+
             <TextField
               required
               value={requestedPaymentDay}
               onChange={handleRequestedPaymentDayChange}
               name="requestedPaymentDay"
-              label="Día de Pago Solicitado:"
+              label="Día Pago Solicitado:"
               variant="standard"
               sx={{ mb: 2 }}
             />
+
             <TextField
               required
               value={exchangeValue}
@@ -194,7 +194,6 @@ export default function FormPropsTextFieldsDate({ handleCancel }) {
         </Grid>
         {/* buttons */}
         <Grid item xs={12}>
-          {' '}
           <Box
             sx={{
               marginTop: '20px',
@@ -202,28 +201,41 @@ export default function FormPropsTextFieldsDate({ handleCancel }) {
               display: 'flex',
             }}
           >
-            <Link to="/viewReplaceFormChangeDate">
-              <Button
-                sx={{
-                  mb: 2,
+            <Button
+              type="submit"
+              variant="outlined"
+              disabled={
+                city === '' ||
+                currentDate === null || // Cambiado a comparación con null para DatePicker
+                currentPaymentDay === '' ||
+                requestedPaymentDay === '' ||
+                exchangeValue === '' ||
+                clientName === '' ||
+                clientId === '' ||
+                clientPhone === '' ||
+                clientEmail === ''
+              }
+              href="/viewReplaceFormChangeDate"
+              sx={{
+                mb: 2,
+                bgcolor: 'green',
+                color: 'white',
+                alignItems: 'center',
+                marginTop: '0px',
+                marginLeft: '80px',
+                width: '100px',
+                height: '40px',
+                fontSize: '12px',
+                textAlign: 'center',
+                '&:hover': {
                   bgcolor: 'green',
                   color: 'white',
-                  alignItems: 'center',
-                  marginTop: '0px',
-                  marginLeft: '80px',
-                  width: '100px',
-                  height: '40px',
-                  fontSize: '12px',
-                  textAlign: 'center',
-                  '&:hover': {
-                    bgcolor: 'green', // Mantiene el mismo color de fondo cuando se pasa el mouse
-                    color: 'white', // Mantiene el mismo color de texto cuando se pasa el mouse
-                  },
-                }}
-              >
-                ACEPTAR
-              </Button>
-            </Link>
+                },
+              }}
+              onClick={handleAccept} // Agregado onClick handler para el botón Aceptar
+            >
+              <b>ACEPTAR</b>
+            </Button>
             <OkCancelButton onCancel={handleCancel} />
           </Box>
         </Grid>
@@ -231,4 +243,3 @@ export default function FormPropsTextFieldsDate({ handleCancel }) {
     </Box>
   );
 }
- 

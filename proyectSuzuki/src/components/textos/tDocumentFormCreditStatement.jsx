@@ -1,22 +1,21 @@
-import React, { useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/joy/Grid';
 import '../style/printStyles.css'; // Asegúrate de importar el archivo CSS aquí
-// import TableRow from '@mui/material/TableRow';
-import TableBody from '@mui/material/TableBody';
 import Table from '@mui/joy/Table';
 import TableCell from '@mui/material/TableCell';
 import { TableContainer } from '@mui/material';
 import CardActions from '@mui/material/CardActions';
 import { useReactToPrint } from 'react-to-print';
 import Button from '@mui/material/Button';
-import { Typography } from '@mui/material';
 import List from '@mui/joy/List';
 import ListItem from '@mui/joy/ListItem';
+import { Context } from '../../context/context.jsx';
 
 export default function TreplaceFormCreditStatement() {
   const contentRef = useRef(); // Crear el ref
   const [borderAxis] = React.useState('xBetween');
+  const {walletEmail, whatsappNumber, name, id, cellphone, email } = useContext(Context);
 
   const handlePrint = useReactToPrint({
     content: () => contentRef.current,
@@ -165,9 +164,9 @@ export default function TreplaceFormCreditStatement() {
                 aplicada, evitando así moras y reportes negativos, a través de
                 los siguientes canales: <br />
                 <br />
-                <b>Correo electrónico:</b> VARIABLE
+                <b>Correo electrónico:</b> {walletEmail} 
                 <Box marginLeft={7} display="inline">
-                  <b>Whatsapp:</b> VARIABLE
+                  <b>Whatsapp:</b> {whatsappNumber}
                   <br /> <br />
                 </Box>
                 <Box>
@@ -181,19 +180,19 @@ export default function TreplaceFormCreditStatement() {
               <tbody>
                 <tr style={{ textAlign: 'justify ', fontSize: '15px' }}>
                   <td>Nombre</td>
-                  <td>VARIABLE</td>
+                  <td>{name}</td>
                 </tr>
                 <tr style={{ textAlign: 'left ', fontSize: '15px' }}>
                   <td>Cédula</td>
-                  <td>VARIABLE</td>
+                  <td>{id}</td>
                 </tr>
                 <tr style={{ textAlign: 'left ', fontSize: '15px' }}>
                   <td>Celular</td>
-                  <td>VARIABLE</td>
+                  <td>{cellphone}</td>
                 </tr>
                 <tr style={{ textAlign: 'left ', fontSize: '15px' }}>
                   <td>Correo electrónico</td>
-                  <td>VARIABLE</td>
+                  <td>{email}</td>
                 </tr>
               </tbody>
             </Table>

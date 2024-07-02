@@ -1,84 +1,72 @@
-import * as React from 'react';
+import { useContext, useState } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import BasicButtons from '../buttons/buttons';
-import { useState } from 'react';
-import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Grid';
-import OkCancelButton from '../buttons/buttonOkCan';
-import { Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
+import OkCancelButton from '../buttons/buttonOkCan';
+import { Context } from '../../context/context.jsx';
+import { Link } from 'react-router-dom';
 
 export default function FormPropsTextFieldsCreditCertificate({ handleCancel }) {
   //  wallet email
-  const [walletEmail, setWalletEmail] = useState('');
-
-  const handleWalletEmailChange = (event) => {
-    const value = event.target.value.replace(/[^A-Za-z0-9\s@.]/gi, '');
-    setWalletEmail(value);
-  };
+  const { walletEmail, setWalletEmail } = useContext(Context);
+  const {whatsappNumber, setWhatsappNumber} = useContext(Context);
+  const {name, setName} = useContext(Context);
+  const {id, setId} = useContext(Context);
+  const {cellphone, setCellphone} = useContext(Context);
+  const {email, setEmail} = useContext(Context);
+  
+  // const handleWalletEmailChange = (event) => {
+  //   const value = event.target.value.replace(/[^A-Za-z0-9\s@.]/gi, '');
+  //   setWalletEmail(value);
+  // };
 
   // whatsapp number
-  const [whatsappNumber, setWhatsappNumber] = useState('');
-  const handleWhatsappNumberChange = (event) => {
-    const value = event.target.value.replace(/[^0-9]+/g, '');
-    setWhatsappNumber(value);
-  };
+  
+  // const handleWhatsappNumberChange = (event) => {
+  //   const value = event.target.value.replace(/[^0-9]+/g, '');
+  //   setWhatsappNumber(value);
+  // };
 
   // name
-  const [name, setName] = useState('');
-  const handleNameChange = (event) => {
-    const value = event.target.value.replace(/[^A-Za-z\s]+/g, '');
-    setName(value);
-  };
+  // const handleNameChange = (event) => {
+  //   const value = event.target.value.replace(/[^A-Za-z\s]+/g, '');
+  //   setName(value);
+  // };
 
   // ID
-  const [id, setId] = useState('');
-  const handleIdChange = (event) => {
-    const value = event.target.value.replace(/\D/g, '');
-    setId(value);
-  };
+  // const handleIdChange = (event) => {
+  //   const value = event.target.value.replace(/\D/g, '');
+  //   setId(value);
+  // };
 
   // cellphone
-  const [cellphone, setCellphone] = useState('');
-  const handleCellphoneChange = (event) => {
-    const value = event.target.value.replace(/\D/g, '');
-    setCellphone(value);
-  };
+  // const handleCellphoneChange = (event) => {
+  //   const value = event.target.value.replace(/\D/g, '');
+  //   setCellphone(value);
+  // };
 
   // email
-  const [email, setEmail] = useState('');
-  const handleEmailChange = (event) => {
-    const value = event.target.value.replace(/[^A-Za-z0-9\s@.]+/g, '');
-    setEmail(value);
-  };
-
-  // buttons ok cancel
-  const [message, setMessage] = useState('');
-
-  const handleAccept = () => {
-    setMessage('Accepted');
-  };
-
-  // const handleCancel = () => {
-  //   setMessage('Canceled');
+  // const handleEmailChange = (event) => {
+  //   const value = event.target.value.replace(/[^A-Za-z0-9\s@.]+/g, '');
+  //   setEmail(value);
   // };
-  // close modal by button
-  // const [open, setOpen] = useState(true); // Destructuring of state and function to update it
 
-  // const handleClose = () => {
-  //   setOpen(false);
-  // };
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('Submit');
+  };
 
   return (
     <Box
-      component="form"
-      sx={{
-        '& .MuiTextField-root': { m: 1, width: '100%' }, // Style for all TextFields within the form
-        // You can add more custom styles here
-      }}
-      noValidate
-      autoComplete="off"
+    component="form"
+    onSubmit={handleSubmit}
+    sx={{
+      '& .MuiTextField-root': { m: 1, width: '100%' },
+    }}
+    noValidate
+    autoComplete="off"
     >
       <div>
         {/* TextField for wallet email */}
@@ -86,7 +74,7 @@ export default function FormPropsTextFieldsCreditCertificate({ handleCancel }) {
           autoFocus
           required
           value={walletEmail}
-          onChange={handleWalletEmailChange}
+          onChange={(e) => setWalletEmail(e.target.value)}
           name="walletEmail"
           label="Correo Cartera:"
           variant="standard" // Add a border to the TextField
@@ -101,7 +89,7 @@ export default function FormPropsTextFieldsCreditCertificate({ handleCancel }) {
         <TextField
           required
           value={whatsappNumber}
-          onChange={handleWhatsappNumberChange}
+          onChange={(e) => setWhatsappNumber(e.target.value)}
           name="whatsappNumber"
           label="Número de Whatsapp:"
           variant="standard" // Add a border to the TextField
@@ -116,7 +104,7 @@ export default function FormPropsTextFieldsCreditCertificate({ handleCancel }) {
         <TextField
           required
           value={name}
-          onChange={handleNameChange}
+          onChange={(e) => setName(e.target.value)}
           name="name"
           label="Nombre"
           variant="standard" // Add a border to the TextField
@@ -131,7 +119,7 @@ export default function FormPropsTextFieldsCreditCertificate({ handleCancel }) {
         <TextField
           required
           value={id}
-          onChange={handleIdChange}
+          onChange={(e) => setId(e.target.value)}
           name="id"
           label="Cédula"
           variant="standard" // Add a border to the TextField
@@ -146,7 +134,7 @@ export default function FormPropsTextFieldsCreditCertificate({ handleCancel }) {
         <TextField
           required
           value={cellphone}
-          onChange={handleCellphoneChange}
+          onChange={(e) => setCellphone(e.target.value)}
           name="cellphone"
           label="Celular"
           variant="standard" // Add a border to the TextField
@@ -161,7 +149,7 @@ export default function FormPropsTextFieldsCreditCertificate({ handleCancel }) {
         <TextField
           required
           value={email}
-          onChange={handleEmailChange}
+          onChange={(e) => setEmail(e.target.value)}
           name="email"
           label="Correo Electrónico"
           variant="standard" // Add a border to the TextField
@@ -174,8 +162,6 @@ export default function FormPropsTextFieldsCreditCertificate({ handleCancel }) {
 
         {/* buttons */}
         <Grid item xs={12}>
-          {' '}
-         
           <Box
             sx={{
               marginTop: '20px',
@@ -183,28 +169,41 @@ export default function FormPropsTextFieldsCreditCertificate({ handleCancel }) {
               display: 'flex',
             }}
           >
-            <Link to="/viewReplaceFormCreditStatement">
-              <Button
-                sx={{
-                  mb: 2,
-                  bgcolor: 'green',
-                  color: 'white',
-                  alignItems: 'center',
-                  marginTop: '0px',
-                  marginLeft: '80px',
-                  width: '100px',
-                  height: '40px',
-                  fontSize: '12px',
-                  textAlign: 'center',
-                  '&:hover': {
-                    bgcolor: 'green', // Mantiene el mismo color de fondo cuando se pasa el mouse
-                    color: 'white', // Mantiene el mismo color de texto cuando se pasa el mouse
-                  },
-                }}
+            <Button
+              type="submit"
+              variant="outlined"
+              disabled={
+                walletEmail === '' ||
+                whatsappNumber === '' ||
+                name === '' ||
+                id === '' ||
+                cellphone === '' ||
+                email === ''
+              }
+              sx={{
+                mb: 2,
+                bgcolor: 'green',
+                color: 'white',
+                alignItems: 'center',
+                marginTop: '0px',
+                marginLeft: '80px',
+                width: '100px',
+                height: '40px',
+                fontSize: '12px',
+                textAlign: 'center',
+                '&:hover': {
+                  bgcolor: 'green', // Mantiene el mismo color de fondo cuando se pasa el mouse
+                  color: 'white', // Mantiene el mismo color de texto cuando se pasa el mouse
+                },
+              }}
+            >
+              <Link
+                to="/viewReplaceFormCreditStatement"
+                style={{ color: 'white' }}
               >
                 ACEPTAR
-              </Button>
-            </Link>
+              </Link>
+            </Button>
             <OkCancelButton onCancel={handleCancel} />
           </Box>
         </Grid>

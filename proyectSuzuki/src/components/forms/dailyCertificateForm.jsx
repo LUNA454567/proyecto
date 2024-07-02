@@ -1,133 +1,104 @@
-import * as React from 'react';
+import { useContext, useState } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-// import Input from '@mui/joy/Input';
-// import BasicButtons from '../buttons/buttons';
-import { useState } from 'react';
 import Grid from '@mui/material/Grid';
-import { Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import OkCancelButton from '../buttons/buttonOkCan';
+import { Context } from '../../context/context.jsx';
+import { Link } from 'react-router-dom';
 
 export default function FormPropsTextFieldsDia({ handleCancel }) {
-  //  NAME
-  const [nameCons, setNameCons] = useState('');
+  const { nameCons, setNameCons } = useContext(Context);
+  const { idCons, setIdCons } = useContext(Context);
+  const { invoiceNumberCons, setInvoiceNumberCons } = useContext(Context);
 
-  const handleNameConsChange = (event) => {
-    const value = event.target.value.replace(/[^A-Za-z\s]/gi, '');
-    setNameCons(value);
-  };
-
-  // ID
-  const [idCons, setIdCons] = useState('');
-
-  const handleIdConsChange = (event) => {
-    const value = event.target.value.replace(/[^A-Za-z0-9\s@.]+/g, '');
-    setIdCons(value);
-  };
-
-  // INVOICE NUMBER
-  const [invoiceNumberCons, setInvoiceNumberCons] = useState('');
-
-  const handleInvoiceNumberConsChange = (event) => {
-    const value = event.target.value.replace(/[^A-Za-z0-9\s@.]+/g, '');
-    setInvoiceNumberCons(value);
-  };
-
-  // buttons ok cancel
-  const [message, setMessage] = useState('');
-
-  const handleAccept = () => {
-    setMessage('Accepted');
-  };
-
- 
-  const [open, setOpen] = useState(false);
-
-  // const handleClose = () => {
-  //   setOpen(openModal);
-  // };
+  const [error, setError] = useState({
+    error: false,
+    message: ' ',
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Submit");
+    console.log('Submit');
   };
-
-  const [error, setError] = useState({
-    error:false,
-    message: " "
-  });
 
   return (
     <Box
       component="form"
       onSubmit={handleSubmit}
       sx={{
-        '& .MuiTextField-root': { m: 1, width: '100%' }, // Style for all TextFields within the form
-        // You can add more custom styles here
+        '& .MuiTextField-root': { m: 1, width: '100%' },
       }}
       noValidate
       autoComplete="off"
     >
-        <TextField
-          value={nameCons}
-          onChange={(e) => setNameCons(e.target.value)}
-          name="nameCons"
-          label="Nombre:"
-          variant="standard"
-          required 
-          error={error.error} // Mostrar error si el campo está vacío
-          helperText= {error.message}  // Add a border to the TextField
-          sx={{ mb: 2 }} // Add bottom margin
-          InputProps={{
-            // Styles for the input of the TextField
-            style: { paddingRight: '0.5rem' }, // Add space to the right of the input
-          }}
-        />
-
-        {/* TextField for ID */}
-        <TextField
-          required
-          value={idCons}
-          onChange={handleIdConsChange}
-          name="idCons"
-          label="Cedula:"
-          variant="standard" // Add a border to the TextField
-          sx={{ mb: 2 }} // Add bottom margin
-          InputProps={{
-            // Styles for the input of the TextField
-            style: { paddingRight: '0.5rem' }, // Add space to the right of the input
-          }}
-        />
-
-        {/* TextField for invoice number */}
-        <TextField
-          required
-          value={invoiceNumberCons}
-          onChange={handleInvoiceNumberConsChange}
-          name="invoiceNumberCons"
-          label="Numero factura:"
-          variant="standard" // Add a border to the TextField
-          sx={{ mb: 2 }} // Add bottom margin
-          InputProps={{
-            // Styles for the input of the TextField
-            style: { paddingRight: '0.5rem' }, // Add space to the right of the input
-          }}
-        />
-
-        {/* buttons */}
-        <Grid item xs={12}>
-      <Box
-        sx={{
-          marginTop: '20px',
-          fontSize: '12px',
-          display: 'flex',
+      <TextField
+        value={nameCons}
+        onChange={(e) => {
+          const input = e.target.value;
+          // Validación: Solo letras
+          if (/^[a-zA-Z\s]*$/.test(input)) {
+            setNameCons(input);
+          }
         }}
-      >
-        <Link  to="/viewReplaceFormConstanceUpToday" style={{ textDecoration: 'none' }}>
+        name="nameCons"
+        label="Nombre:"
+        variant="standard"
+        required
+        error={error.error}
+        helperText={error.message}
+        sx={{ mb: 2 }}
+        InputProps={{
+          style: { paddingRight: '0.5rem' },
+        }}
+      />
+
+      <TextField
+        required
+        value={idCons}
+        onChange={(e) => {
+          const input = e.target.value;
+          // Validación: Solo números
+          if (/^\d*$/.test(input)) {
+            setIdCons(input);
+          }
+        }}
+        name="idCons"
+        label="Cedula:"
+        variant="standard"
+        sx={{ mb: 2 }}
+        InputProps={{
+          style: { paddingRight: '0.5rem' },
+        }}
+      />
+
+      <TextField
+        required
+        value={invoiceNumberCons}
+        onChange={(e) => {
+          const input = e.target.value;
+          // Validación: Letras y números
+          if (/^[a-zA-Z0-9]*$/.test(input)) {
+            setInvoiceNumberCons(input);
+          }
+        }}
+        name="invoiceNumberCons"
+        label="Numero factura:"
+        variant="standard"
+        sx={{ mb: 2 }}
+        InputProps={{
+          style: { paddingRight: '0.5rem' },
+        }}
+      />
+
+      <Grid item xs={12}>
+        <Box sx={{ marginTop: '20px', fontSize: '12px', display: 'flex' }}>
           <Button
             type="submit"
             variant="outlined"
+            disabled={
+              nameCons === '' || idCons === '' || invoiceNumberCons === ''
+            }
             sx={{
               mb: 2,
               bgcolor: 'green',
@@ -140,17 +111,21 @@ export default function FormPropsTextFieldsDia({ handleCancel }) {
               fontSize: '12px',
               textAlign: 'center',
               '&:hover': {
-                bgcolor: 'green', // Mantiene el mismo color de fondo cuando se pasa el mouse
-                color: 'white', // Mantiene el mismo color de texto cuando se pasa el mouse
+                bgcolor: 'green',
+                color: 'white',
               },
             }}
           >
-            ACEPTAR
+            <Link
+              to="/viewReplaceFormConstanceUpToday"
+              style={{ color: 'white' }}
+            >
+              ACEPTAR
+            </Link>
           </Button>
-        </Link>
-        <OkCancelButton onCancel={handleCancel} />
-      </Box>
-    </Grid>
-      </Box>
+          <OkCancelButton onCancel={handleCancel} />
+        </Box>
+      </Grid>
+    </Box>
   );
 }

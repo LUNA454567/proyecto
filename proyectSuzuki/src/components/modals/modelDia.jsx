@@ -59,7 +59,7 @@ export default function ModalDia({ openModal }) {
             </IconButton>
           </Box>
           <Box component="section" sx={{ p: 2 }}>
-            <FormPropsTextFieldsDia/>
+            <FormPropsTextFieldsDia handleCancel={handleClose}/>
           </Box>
         </Box>
       </Modal>

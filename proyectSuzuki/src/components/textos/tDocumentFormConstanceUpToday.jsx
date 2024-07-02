@@ -11,10 +11,13 @@ import CardActions from '@mui/material/CardActions';
 import { useReactToPrint } from 'react-to-print';
 import Button from '@mui/material/Button';
 import { Typography } from '@mui/material';
+import { useContext } from 'react';
+import { Context } from '../../context/context.jsx';
 
 export default function TreplaceFormConstanceUpToday() {
   const contentRef = useRef(); // Crear el ref
   const [borderAxis] = React.useState('xBetween');
+  const { nameCons, idCons, invoiceNumberCons } = useContext(Context);
 
   const handlePrint = useReactToPrint({
     content: () => contentRef.current,
@@ -53,9 +56,9 @@ export default function TreplaceFormConstanceUpToday() {
                     }}
                   >
                     <b>SUZUKI MOTOR DE COLOMBIA S.A.</b> hace constar que el(la)
-                    señor(a) variable identificado(a) con Cédula de Ciudadanía
-                    No. 018000 se encuentra al día en los pagos de la Factura
-                    6555 en calidad de Codeudor.
+                    señor(a) {nameCons} variable identificado(a) con Cédula de
+                    Ciudadanía No. {idCons} se encuentra al día en los pagos de la
+                    Factura {invoiceNumberCons} en calidad de Codeudor.
                     <br />
                     <br />
                     <br />
