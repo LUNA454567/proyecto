@@ -11,11 +11,29 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Button from '@mui/material/Button';
 import { Context } from '../../context/context.jsx';
 import { Link } from 'react-router-dom';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 export default function FormPropsTextFieldsDate({ handleCancel }) {
-  const {city, setCity} = useContext(Context);
-  const {currentDate, setCurrentDate} = useContext(Context);
-  const {currentPaymentDay, setCurrentPaymentDay} = useContext(Context);
+  const { city, setCity } = useContext(Context);
+  const { currentPaymentDay, setCurrentPaymentDay } = useContext(Context);
+  const { requestedPaymentDay, setRequestedPaymentDay } = useContext(Context);
+  const { exchangeValue, setExchangeValue } = useContext(Context);
+  const { clientName, setClientName } = useContext(Context);
+  const { clientId, setClientId } = useContext(Context);
+  const { clientPhone, setClientPhone } = useContext(Context);
+  const { clientEmail, setClientEmail } = useContext(Context);
+
+  const { currentDate, setCurrentDate } = useContext(Context);
+  const handleChangeDate = (event) => {
+    // event es el nuevo valor de fecha
+    let date = format(event, 'dd/MMMM/yyyy', { locale: es }); // Formatea la fecha a 'dd/MMMM/yyyy', MMMMM es el mes en letras
+    let day = date.split('/')[0];
+    let month = date.split('/')[1];
+    let year = date.split('/')[2];
+    let newDate = 'El ' + day + ' de ' + month + ' del ' + year;
+    setCurrentDate(newDate);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -41,51 +59,45 @@ export default function FormPropsTextFieldsDate({ handleCancel }) {
   // };
 
   // REQUESTED PAYMENT DAY
-  const [requestedPaymentDay, setRequestedPaymentDay] = useState('');
-  const handleRequestedPaymentDayChange = (event) => {
-    const value = event.target.value.replace(/\D/g, '');
-    setRequestedPaymentDay(value);
-  };
+  // const handleRequestedPaymentDayChange = (event) => {
+  //   const value = event.target.value.replace(/\D/g, '');
+  //   setRequestedPaymentDay(value);
+  // };
 
   // EXCHANGE VALUE
-  const [exchangeValue, setExchangeValue] = useState('');
-  const handleExchangeValueChange = (event) => {
-    const value = event.target.value.replace(/\D/g, '');
-    setExchangeValue(value);
-  };
+  // const handleExchangeValueChange = (event) => {
+  //   const value = event.target.value.replace(/\D/g, '');
+  //   setExchangeValue(value);
+  // };
 
   // CLIENT NAME
-  const [clientName, setClientName] = useState('');
-  const handleClientNameChange = (event) => {
-    const value = event.target.value.replace(/[^A-Za-z0-9\s@.]+/g, '');
-    setClientName(value);
-  };
+  // const handleClientNameChange = (event) => {
+  //   const value = event.target.value.replace(/[^A-Za-z0-9\s@.]+/g, '');
+  //   setClientName(value);
+  // };
 
   // CLIENT ID
-  const [clientId, setClientId] = useState('');
-  const handleClientIdChange = (event) => {
-    const value = event.target.value.replace(/\D/g, '');
-    setClientId(value);
-  };
+  // const handleClientIdChange = (event) => {
+  //   const value = event.target.value.replace(/\D/g, '');
+  //   setClientId(value);
+  // };
 
   // CLIENT PHONE
-  const [clientPhone, setClientPhone] = useState('');
-  const handleClientPhoneChange = (event) => {
-    const value = event.target.value.replace(/\D/g, '');
-    setClientPhone(value);
-  };
+  // const handleClientPhoneChange = (event) => {
+  //   const value = event.target.value.replace(/\D/g, '');
+  //   setClientPhone(value);
+  // };
 
   // CLIENT EMAIL
-  const [clientEmail, setClientEmail] = useState('');
-  const handleClientEmailChange = (event) => {
-    const value = event.target.value.replace(/[^A-Za-z0-9\s@.]+/g, '');
-    setClientEmail(value);
-  };
+  // const handleClientEmailChange = (event) => {
+  //   const value = event.target.value.replace(/[^A-Za-z0-9\s@.]+/g, '');
+  //   setClientEmail(value);
+  // };
 
   // Accept button handler
-  const handleAccept = () => {
-    console.log('Accepted');
-  };
+  // const handleAccept = () => {
+  //   console.log('Accepted');
+  // };
 
   return (
     <Box
@@ -131,10 +143,7 @@ export default function FormPropsTextFieldsDate({ handleCancel }) {
                   label="Fecha Actual:"
                   value={currentDate}
                   name="currentDate"
-                  onChange={(e) => setCurrentDate(e.target.value)} // El evento pasa directamente el nuevo valor de fecha
-                  renderInput={(params) => (
-                    <TextField {...params} variant="standard" />
-                  )}
+                  onChange={handleChangeDate}
                 />
               </Box>
             </LocalizationProvider>
@@ -158,7 +167,13 @@ export default function FormPropsTextFieldsDate({ handleCancel }) {
             <TextField
               required
               value={requestedPaymentDay}
-              onChange={handleRequestedPaymentDayChange}
+              onChange={(e) => {
+                const input = e.target.value;
+                // Validación: Solo números
+                if (/^\d*$/.test(input)) {
+                  setRequestedPaymentDay(input);
+                }
+              }}
               name="requestedPaymentDay"
               label="Día Pago Solicitado:"
               variant="standard"
@@ -168,7 +183,13 @@ export default function FormPropsTextFieldsDate({ handleCancel }) {
             <TextField
               required
               value={exchangeValue}
-              onChange={handleExchangeValueChange}
+              onChange={(e) => {
+                const input = e.target.value;
+                // Validación: Solo números
+                if (/^\d*$/.test(input)) {
+                  setExchangeValue(input);
+                }
+              }}
               name="exchangeValue"
               label="Valor Cambio:"
               variant="standard"
@@ -181,7 +202,12 @@ export default function FormPropsTextFieldsDate({ handleCancel }) {
             <Typography sx={{ mt: 1 }}>{'Información del Cliente:'}</Typography>
             <TextField
               value={clientName}
-              onChange={handleClientNameChange}
+              onChange={(e) => {
+                const input = e.target.value;
+                if (/^[a-zA-Z\s]*$/.test(input)) {
+                  setClientName(input);
+                }
+              }}
               name="clientName"
               label="Nombre Cliente:"
               variant="standard"
@@ -189,7 +215,12 @@ export default function FormPropsTextFieldsDate({ handleCancel }) {
             />
             <TextField
               value={clientId}
-              onChange={handleClientIdChange}
+              onChange={(e) => {
+                const input = e.target.value;
+                if (/^\d*$/.test(input)) {
+                  setClientId(input);
+                }
+              }}
               name="clientId"
               label="Cedula Cliente:"
               variant="standard"
@@ -197,7 +228,12 @@ export default function FormPropsTextFieldsDate({ handleCancel }) {
             />
             <TextField
               value={clientPhone}
-              onChange={handleClientPhoneChange}
+              onChange={(e) => {
+                const input = e.target.value;
+                if (/^\d*$/.test(input)) {
+                  setClientPhone(input);
+                }
+              }}
               name="clientPhone"
               label="Celular Cliente:"
               variant="standard"
@@ -205,7 +241,13 @@ export default function FormPropsTextFieldsDate({ handleCancel }) {
             />
             <TextField
               value={clientEmail}
-              onChange={handleClientEmailChange}
+              onChange={(e) => {
+                const input = e.target.value;
+                // Validación: Letras y números
+                if (/^[a-zA-Z0-9-@]*.$/.test(input)) {
+                  setClientEmail(input);
+                }
+              }}
               name="clientEmail"
               label="Correo Cliente:"
               variant="standard"

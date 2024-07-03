@@ -63,7 +63,7 @@ export default function ModalFinaval({ openModal }) {
           </Box>
           <Box component="section" sx={{ p: 2}}>
             {/* FORMS */}
-            <FormPropsTextFieldsFinaval />
+            <FormPropsTextFieldsFinaval handleCancel={handleClose} />
           </Box>
         </Box>
       </Modal>

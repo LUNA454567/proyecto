@@ -21,6 +21,12 @@ export const ContextProvider = ({ children }) => {
   const [city, setCity] = useState('');
   const [currentDate, setCurrentDate] = useState('');
   const [currentPaymentDay, setCurrentPaymentDay] = useState('');
+  const [requestedPaymentDay, setRequestedPaymentDay] = useState('');
+  const [exchangeValue, setExchangeValue] = useState('');
+  const [clientName, setClientName] = useState('');
+  const [clientId, setClientId] = useState('');
+  const [clientPhone, setClientPhone] = useState('');
+  const [clientEmail, setClientEmail] = useState('');
 
   return (
     <Context.Provider
@@ -51,6 +57,18 @@ export const ContextProvider = ({ children }) => {
         setCurrentDate,
         currentPaymentDay,
         setCurrentPaymentDay,
+        requestedPaymentDay,
+        setRequestedPaymentDay,
+        exchangeValue,
+        setExchangeValue,
+        clientName,
+        setClientName,
+        clientId,
+        setClientId,
+        clientPhone,
+        setClientPhone,
+        clientEmail,
+        setClientEmail,
       }}
     >
       {children}

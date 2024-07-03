@@ -1,22 +1,23 @@
-import React, { useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/joy/Grid';
 import '../style/printStyles.css'; // Asegúrate de importar el archivo CSS aquí
 // import TableRow from '@mui/material/TableRow';
-import TableBody from '@mui/material/TableBody';
 import Table from '@mui/joy/Table';
 import TableCell from '@mui/material/TableCell';
 import { TableContainer } from '@mui/material';
 import CardActions from '@mui/material/CardActions';
 import { useReactToPrint } from 'react-to-print';
 import Button from '@mui/material/Button';
-import { Typography } from '@mui/material';
 import List from '@mui/joy/List';
 import ListItem from '@mui/joy/ListItem';
+import { Context } from '../../context/context.jsx';
 
 export default function TreplaceFormConstanceFinaval() {
   const contentRef = useRef(); // Crear el ref
   const [borderAxis] = React.useState('xBetween');
+  const { walletEmail, whatsappNumber, name, id, cellphone, email } =
+    useContext(Context);
 
   const handlePrint = useReactToPrint({
     content: () => contentRef.current,
@@ -55,14 +56,11 @@ export default function TreplaceFormConstanceFinaval() {
               <thead></thead>
               <tbody>
                 <tr>
-                  <TableCell
-                    sx={{
-                      padding: '28px',
-                      textAlign: 'justify',
-                      fontSize: '15px',
-                    }}
-                  >
-                    <List marker="circle">
+                  <TableCell>
+                    <List
+                      marker="circle"
+                      sx={{ textAlign: 'justify', fontSize: '13px' }}
+                    >
                       <ListItem>
                         Recibí información de la Facturación a crédito, he
                         firmado dicho documento como constancia de que me fue
@@ -116,49 +114,154 @@ export default function TreplaceFormConstanceFinaval() {
               </tbody>
             </Table>
             <tr>
-              <h2 style={{ textAlign: 'center', fontSize: '15px' }}>
+              <h2 style={{ width: '100%',textAlign: 'center', fontSize: '12px', marginTop:'99px' }}>
                 NUMEROS DE CUENTA BANCOS
               </h2>
-              <Table borderAxis={borderAxis} style={{ width: '100%' }}>
+              <Table
+                border="0"
+                style={{
+                  width: '100%',
+                  fontSize: '11px',
+                  borderCollapse: 'collapse',
+                }}
+              >
                 <tbody>
-                  <tr style={{ textAlign: 'justify ', fontSize: '13px' }}>
-                    <td>NOMBRE DEL BANCO</td>
-                    <td>TIPO</td>
-                    <td>No. CUENTA</td>
+                  <tr>
+                    <td
+                      style={{
+                        width: '40%',
+                        borderBottom: 'none',
+                        borderRight: 'none',
+                        textAlign: 'left',
+                      }}
+                    >
+                      NOMBRE DEL BANCO
+                    </td>
+                    <td
+                      style={{
+                        width: '30%',
+                        borderBottom: 'none',
+                        borderRight: 'none',
+                        textAlign: 'left',
+                      }}
+                    >
+                      TIPO
+                    </td>
+                    <td
+                      style={{
+                        width: '30%',
+                        borderBottom: 'none',
+                        textAlign: 'left',
+                      }}
+                    >
+                      No. CUENTA
+                    </td>
                   </tr>
-                  <tr style={{ textAlign: 'left ', fontSize: '13px' }}>
-                    <td>BOGOTA SIS. NAL. DE RECAUDOS</td>
-                    <td>CORRIENTE</td>
-                    <td>465-01926-3</td>
+                  <tr>
+                    <td
+                      style={{
+                        borderBottom: 'none',
+                        borderRight: 'none',
+                        textAlign: 'left',
+                      }}
+                    >
+                      BOGOTA SIS. NAL. DE RECAUDOS
+                    </td>
+                    <td
+                      style={{
+                        borderBottom: 'none',
+                        borderRight: 'none',
+                        textAlign: 'left',
+                      }}
+                    >
+                      CORRIENTE
+                    </td>
+                    <td style={{ borderBottom: 'none', textAlign: 'left' }}>
+                      465-01926-3
+                    </td>
                   </tr>
-                  <tr style={{ textAlign: 'left ', fontSize: '13px' }}>
-                    <td>BANCOLOMBIA RECAUDOS</td>
-                    <td>CORRIENTE</td>
-                    <td>073-410137-13</td>
+                  <tr>
+                    <td
+                      style={{
+                        borderBottom: 'none',
+                        borderRight: 'none',
+                        textAlign: 'left',
+                      }}
+                    >
+                      BANCOLOMBIA RECAUDOS
+                    </td>
+                    <td
+                      style={{
+                        borderBottom: 'none',
+                        borderRight: 'none',
+                        textAlign: 'left',
+                      }}
+                    >
+                      CORRIENTE
+                    </td>
+                    <td style={{ borderBottom: 'none', textAlign: 'left' }}>
+                      073-410137-13
+                    </td>
                   </tr>
-                  <tr style={{ textAlign: 'left ', fontSize: '13px' }}>
-                    <td>DAVIVIENDA</td>
-                    <td>AHORROS</td>
-                    <td>1260-0003912-6</td>
+                  <tr>
+                    <td
+                      style={{
+                        borderBottom: 'none',
+                        borderRight: 'none',
+                        textAlign: 'left',
+                      }}
+                    >
+                      DAVIVIENDA
+                    </td>
+                    <td
+                      style={{
+                        borderBottom: 'none',
+                        borderRight: 'none',
+                        textAlign: 'left',
+                      }}
+                    >
+                      AHORROS
+                    </td>
+                    <td style={{ borderBottom: 'none', textAlign: 'left' }}>
+                      1260-0003912-6
+                    </td>
                   </tr>
-                  <tr style={{ textAlign: 'left ', fontSize: '13px' }}>
-                    <td>BBVA (CONVENIO 1690)</td>
-                    <td>CORRIENTE</td>
-                    <td>703-04826-4</td>
+                  <tr>
+                    <td
+                      style={{
+                        borderBottom: 'none',
+                        borderRight: 'none',
+                        textAlign: 'left',
+                      }}
+                    >
+                      BBVA (CONVENIO 1690)
+                    </td>
+                    <td
+                      style={{
+                        borderBottom: 'none',
+                        borderRight: 'none',
+                        textAlign: 'left',
+                      }}
+                    >
+                      CORRIENTE
+                    </td>
+                    <td style={{ borderBottom: 'none', textAlign: 'left' }}>
+                      703-04826-4
+                    </td>
                   </tr>
                 </tbody>
               </Table>
             </tr>
             <tr>
-              <TableCell sx={{ textAlign: 'justify', fontSize: '15px' }}>
+              <TableCell sx={{ textAlign: 'justify', fontSize: '13px' }}>
                 Me he comprometido a enviar soportes de pago, inmediatamente
                 haga la consignación o transferencia, para que sea confirmada y
                 aplicada, evitando así moras y reportes negativos, a través de
                 los siguientes canales: <br />
                 <br />
-                <b>Correo electrónico:</b> VARIABLE
+                <b>Correo electrónico:</b> {walletEmail}
                 <Box marginLeft={7} display="inline">
-                  <b>Whatsapp:</b> VARIABLE
+                  <b>Whatsapp:</b> {whatsappNumber}
                   <br /> <br />
                 </Box>
                 <Box>
@@ -168,23 +271,71 @@ export default function TreplaceFormConstanceFinaval() {
                 <Box marginRight={7} display="inline"></Box>
               </TableCell>
             </tr>
-            <Table style={{ width: '100%' }}>
+            <Table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <tbody>
-                <tr style={{ textAlign: 'justify ', fontSize: '15px' }}>
-                  <td>Nombre</td>
-                  <td>VARIABLE</td>
+                <tr style={{ fontSize: '12px' }}>
+                  <td
+                    style={{
+                      width: '40%',
+                      textAlign: 'justify',
+                      border: 'none',
+                    }}
+                  >
+                    Nombre
+                  </td>
+                  <td
+                    style={{ width: '60%', textAlign: 'left', border: 'none' }}
+                  >
+                    {name}
+                  </td>
                 </tr>
-                <tr style={{ textAlign: 'left ', fontSize: '15px' }}>
-                  <td>Cédula</td>
-                  <td>VARIABLE</td>
+                <tr style={{ fontSize: '12px' }}>
+                  <td
+                    style={{
+                      width: '40%',
+                      textAlign: 'justify',
+                      border: 'none',
+                    }}
+                  >
+                    Cédula
+                  </td>
+                  <td
+                    style={{ width: '60%', textAlign: 'left', border: 'none' }}
+                  >
+                    {id}
+                  </td>
                 </tr>
-                <tr style={{ textAlign: 'left ', fontSize: '15px' }}>
-                  <td>Celular</td>
-                  <td>VARIABLE</td>
+                <tr style={{ fontSize: '12px' }}>
+                  <td
+                    style={{
+                      width: '40%',
+                      textAlign: 'justify',
+                      border: 'none',
+                    }}
+                  >
+                    Celular
+                  </td>
+                  <td
+                    style={{ width: '60%', textAlign: 'left', border: 'none' }}
+                  >
+                    {cellphone}
+                  </td>
                 </tr>
-                <tr style={{ textAlign: 'left ', fontSize: '15px' }}>
-                  <td>Correo electrónico</td>
-                  <td>VARIABLE</td>
+                <tr style={{ fontSize: '12px' }}>
+                  <td
+                    style={{
+                      width: '40%',
+                      textAlign: 'justify',
+                      border: 'none',
+                    }}
+                  >
+                    Correo electrónico
+                  </td>
+                  <td
+                    style={{ width: '60%', textAlign: 'left', border: 'none' }}
+                  >
+                    {email}
+                  </td>
                 </tr>
               </tbody>
             </Table>

@@ -15,7 +15,8 @@ import { Context } from '../../context/context.jsx';
 export default function TreplaceFormCreditStatement() {
   const contentRef = useRef(); // Crear el ref
   const [borderAxis] = React.useState('xBetween');
-  const {walletEmail, whatsappNumber, name, id, cellphone, email } = useContext(Context);
+  const { walletEmail, whatsappNumber, name, id, cellphone, email } =
+    useContext(Context);
 
   const handlePrint = useReactToPrint({
     content: () => contentRef.current,
@@ -127,32 +128,90 @@ export default function TreplaceFormCreditStatement() {
               <h2 style={{ textAlign: 'center', fontSize: '15px' }}>
                 NUMEROS DE CUENTA BANCOS
               </h2>
-              <Table borderAxis={borderAxis} style={{ width: '100%' }}>
+              <Table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <tbody>
-                  <tr style={{ textAlign: 'justify ', fontSize: '13px' }}>
-                    <td>NOMBRE DEL BANCO</td>
-                    <td>TIPO</td>
-                    <td>No. CUENTA</td>
+                  <tr
+                    style={{
+                      textAlign: 'justify',
+                      fontSize: '13px',
+                      borderBottom: 'none',
+                    }}
+                  >
+                    <td
+                      style={{
+                        width: '40%',
+                        textAlign: 'left',
+                        border: 'none',
+                      }}
+                    >
+                      NOMBRE DEL BANCO
+                    </td>
+                    <td
+                      style={{
+                        width: '30%',
+                        textAlign: 'left',
+                        border: 'none',
+                      }}
+                    >
+                      TIPO
+                    </td>
+                    <td
+                      style={{
+                        width: '30%',
+                        textAlign: 'left',
+                        border: 'none',
+                      }}
+                    >
+                      No. CUENTA
+                    </td>
                   </tr>
-                  <tr style={{ textAlign: 'left ', fontSize: '13px' }}>
-                    <td>BOGOTA SIS. NAL. DE RECAUDOS</td>
-                    <td>CORRIENTE</td>
-                    <td>465-01926-3</td>
+                  <tr
+                    style={{
+                      textAlign: 'left',
+                      fontSize: '13px',
+                      borderBottom: 'none',
+                    }}
+                  >
+                    <td style={{ border: 'none' }}>
+                      BOGOTA SIS. NAL. DE RECAUDOS
+                    </td>
+                    <td style={{ border: 'none' }}>CORRIENTE</td>
+                    <td style={{ border: 'none' }}>465-01926-3</td>
                   </tr>
-                  <tr style={{ textAlign: 'left ', fontSize: '13px' }}>
-                    <td>DAVIVIENDA</td>
-                    <td>AHORROS</td>
-                    <td>1260-0003912-6</td>
+                  <tr
+                    style={{
+                      textAlign: 'left',
+                      fontSize: '13px',
+                      borderBottom: 'none',
+                    }}
+                  >
+                    <td style={{ border: 'none' }}>DAVIVIENDA</td>
+                    <td style={{ border: 'none' }}>AHORROS</td>
+                    <td style={{ border: 'none' }}>1260-0003912-6</td>
                   </tr>
-                  <tr style={{ textAlign: 'left ', fontSize: '13px' }}>
-                    <td>BBVA (CONVENIO 1690)</td>
-                    <td>CORRIENTE</td>
-                    <td>703-04826-4</td>
+                  <tr
+                    style={{
+                      textAlign: 'left',
+                      fontSize: '13px',
+                      borderBottom: 'none',
+                    }}
+                  >
+                    <td style={{ border: 'none' }}>BBVA (CONVENIO 1690)</td>
+                    <td style={{ border: 'none' }}>CORRIENTE</td>
+                    <td style={{ border: 'none' }}>703-04826-4</td>
                   </tr>
-                  <tr style={{ textAlign: 'left ', fontSize: '13px' }}>
-                    <td>BANCOLOMBIA (CONVENIO 1489)</td>
-                    <td>CORRIENTE</td>
-                    <td>073-410137-13</td>
+                  <tr
+                    style={{
+                      textAlign: 'left',
+                      fontSize: '13px',
+                      borderBottom: 'none',
+                    }}
+                  >
+                    <td style={{ border: 'none' }}>
+                      BANCOLOMBIA (CONVENIO 1489)
+                    </td>
+                    <td style={{ border: 'none' }}>CORRIENTE</td>
+                    <td style={{ border: 'none' }}>073-410137-13</td>
                   </tr>
                 </tbody>
               </Table>
@@ -164,7 +223,7 @@ export default function TreplaceFormCreditStatement() {
                 aplicada, evitando así moras y reportes negativos, a través de
                 los siguientes canales: <br />
                 <br />
-                <b>Correo electrónico:</b> {walletEmail} 
+                <b>Correo electrónico:</b> {walletEmail}
                 <Box marginLeft={7} display="inline">
                   <b>Whatsapp:</b> {whatsappNumber}
                   <br /> <br />
@@ -176,23 +235,55 @@ export default function TreplaceFormCreditStatement() {
                 <Box marginRight={7} display="inline"></Box>
               </TableCell>
             </tr>
-            <Table style={{ width: '100%' }}>
+            <Table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <tbody>
-                <tr style={{ textAlign: 'justify ', fontSize: '15px' }}>
-                  <td>Nombre</td>
-                  <td>{name}</td>
+                <tr
+                  style={{
+                    textAlign: 'justify',
+                    fontSize: '15px',
+                    borderBottom: 'none',
+                  }}
+                >
+                  <td
+                    style={{ width: '40%', textAlign: 'left', border: 'none' }}
+                  >
+                    Nombre:
+                  </td>
+                  <td
+                    style={{ width: '60%', textAlign: 'left', border: 'none' }}
+                  >
+                    {name}
+                  </td>
                 </tr>
-                <tr style={{ textAlign: 'left ', fontSize: '15px' }}>
-                  <td>Cédula</td>
-                  <td>{id}</td>
+                <tr
+                  style={{
+                    textAlign: 'left',
+                    fontSize: '15px',
+                    borderBottom: 'none',
+                  }}
+                >
+                  <td style={{ border: 'none' }}>Cédula:</td>
+                  <td style={{ border: 'none' }}>{id}</td>
                 </tr>
-                <tr style={{ textAlign: 'left ', fontSize: '15px' }}>
-                  <td>Celular</td>
-                  <td>{cellphone}</td>
+                <tr
+                  style={{
+                    textAlign: 'left',
+                    fontSize: '15px',
+                    borderBottom: 'none',
+                  }}
+                >
+                  <td style={{ border: 'none' }}>Celular:</td>
+                  <td style={{ border: 'none' }}>{cellphone}</td>
                 </tr>
-                <tr style={{ textAlign: 'left ', fontSize: '15px' }}>
-                  <td>Correo electrónico</td>
-                  <td>{email}</td>
+                <tr
+                  style={{
+                    textAlign: 'left',
+                    fontSize: '15px',
+                    borderBottom: 'none',
+                  }}
+                >
+                  <td style={{ border: 'none' }}>Correo electrónico:</td>
+                  <td style={{ border: 'none' }}>{email}</td>
                 </tr>
               </tbody>
             </Table>
