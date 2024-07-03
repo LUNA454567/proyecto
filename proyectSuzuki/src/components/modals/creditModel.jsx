@@ -58,7 +58,7 @@ export default function ModalConstanciaCredito({ openModal }) {
             </IconButton>
           </Box>
           <Box component="section" sx={{ p: 2 }}>
-            <FormPropsTextFieldsConstancia />
+            <FormPropsTextFieldsConstancia handleCancel={handleClose} />
           </Box>
         </Box>
       </Modal>

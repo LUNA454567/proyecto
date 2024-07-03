@@ -17,6 +17,11 @@ export const ContextProvider = ({ children }) => {
   const [cellphone, setCellphone] = useState('');
   const [email, setEmail] = useState('');
 
+  // solicitud cambio de fecha
+  const [city, setCity] = useState('');
+  const [currentDate, setCurrentDate] = useState('');
+  const [currentPaymentDay, setCurrentPaymentDay] = useState('');
+
   return (
     <Context.Provider
       value={{
@@ -39,6 +44,13 @@ export const ContextProvider = ({ children }) => {
         setCellphone,
         email,
         setEmail,
+        // solicitud cambio de fecha
+        city,
+        setCity,
+        currentDate,
+        setCurrentDate,
+        currentPaymentDay,
+        setCurrentPaymentDay,
       }}
     >
       {children}

@@ -1,37 +1,44 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import OkCancelButton from '../buttons/buttonOkCan';
-
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Button from '@mui/material/Button';
+import { Context } from '../../context/context.jsx';
+import { Link } from 'react-router-dom';
 
 export default function FormPropsTextFieldsDate({ handleCancel }) {
-  // CITY
-  const [city, setCity] = useState('');
-  const handleCityChange = (event) => {
-    const value = event.target.value.replace(/[^A-Za-z0-9\s@.]+/g, '');
-    setCity(value);
+  const {city, setCity} = useContext(Context);
+  const {currentDate, setCurrentDate} = useContext(Context);
+  const {currentPaymentDay, setCurrentPaymentDay} = useContext(Context);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('Submit');
   };
+  // CITY
+
+  // const handleCityChange = (event) => {
+  //   const value = event.target.value.replace(/[^A-Za-z0-9\s@.]+/g, '');
+  //   setCity(value);
+  // };
 
   // CURRENT DATE
-  const [currentDate, setCurrentDate] = useState(null); // Cambiado a null
 
-  const handleCurrentDateChange = (newValue) => {
-    setCurrentDate(newValue); // Actualiza directamente el estado con el nuevo valor de fecha
-  };
+  // const handleCurrentDateChange = (newValue) => {
+  //   setCurrentDate(newValue); // Actualiza directamente el estado con el nuevo valor de fecha
+  // };
 
   // CURRENT PAYMENT DAY
-  const [currentPaymentDay, setCurrentPaymentDay] = useState('');
-  const handleCurrentPaymentDayChange = (event) => {
-    const value = event.target.value.replace(/\D/g, '');
-    setCurrentPaymentDay(value);
-  };
+  // const handleCurrentPaymentDayChange = (event) => {
+  //   const value = event.target.value.replace(/\D/g, '');
+  //   setCurrentPaymentDay(value);
+  // };
 
   // REQUESTED PAYMENT DAY
   const [requestedPaymentDay, setRequestedPaymentDay] = useState('');
@@ -83,6 +90,7 @@ export default function FormPropsTextFieldsDate({ handleCancel }) {
   return (
     <Box
       component="form"
+      onSubmit={handleSubmit}
       sx={{
         '& .MuiTextField-root': { m: 1, width: '100%', height: '3rem' },
       }}
@@ -97,7 +105,13 @@ export default function FormPropsTextFieldsDate({ handleCancel }) {
               autoFocus
               required
               value={city}
-              onChange={handleCityChange}
+              onChange={(e) => {
+                const input = e.target.value;
+                // Validación: Solo letras
+                if (/^[a-zA-Z\s]*$/.test(input)) {
+                  setCity(input);
+                }
+              }}
               name="city"
               label="Ciudad:"
               variant="standard"
@@ -116,7 +130,8 @@ export default function FormPropsTextFieldsDate({ handleCancel }) {
                 <DatePicker
                   label="Fecha Actual:"
                   value={currentDate}
-                  onChange={handleCurrentDateChange} // El evento pasa directamente el nuevo valor de fecha
+                  name="currentDate"
+                  onChange={(e) => setCurrentDate(e.target.value)} // El evento pasa directamente el nuevo valor de fecha
                   renderInput={(params) => (
                     <TextField {...params} variant="standard" />
                   )}
@@ -127,7 +142,13 @@ export default function FormPropsTextFieldsDate({ handleCancel }) {
             <TextField
               required
               value={currentPaymentDay}
-              onChange={handleCurrentPaymentDayChange}
+              onChange={(e) => {
+                const input = e.target.value;
+                // Validación: Solo números
+                if (/^\d*$/.test(input)) {
+                  setCurrentPaymentDay(input);
+                }
+              }}
               name="currentPaymentDay"
               label="Día Pago Actual:"
               variant="standard"
@@ -215,7 +236,6 @@ export default function FormPropsTextFieldsDate({ handleCancel }) {
                 clientPhone === '' ||
                 clientEmail === ''
               }
-              href="/viewReplaceFormChangeDate"
               sx={{
                 mb: 2,
                 bgcolor: 'green',
@@ -232,9 +252,10 @@ export default function FormPropsTextFieldsDate({ handleCancel }) {
                   color: 'white',
                 },
               }}
-              onClick={handleAccept} // Agregado onClick handler para el botón Aceptar
             >
-              <b>ACEPTAR</b>
+              <Link to="/viewReplaceFormChangeDate" style={{ color: 'white' }}>
+                ACEPTAR
+              </Link>
             </Button>
             <OkCancelButton onCancel={handleCancel} />
           </Box>

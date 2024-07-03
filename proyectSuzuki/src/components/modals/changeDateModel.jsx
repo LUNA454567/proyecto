@@ -62,7 +62,7 @@ export default function ModalCambioFecha({ openModal }) {
           </Box>
           <Box component="section" sx={{ p: 1 }}>
             {/* FORM */}
-            <FormPropsTextFieldsFecha />
+            <FormPropsTextFieldsFecha handleCancel={handleClose}/>
           </Box>
         </Box>
       </Modal>

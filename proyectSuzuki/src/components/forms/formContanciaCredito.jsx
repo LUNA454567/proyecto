@@ -10,19 +10,19 @@ import { Link } from 'react-router-dom';
 export default function FormPropsTextFieldsCreditCertificate({ handleCancel }) {
   //  wallet email
   const { walletEmail, setWalletEmail } = useContext(Context);
-  const {whatsappNumber, setWhatsappNumber} = useContext(Context);
-  const {name, setName} = useContext(Context);
-  const {id, setId} = useContext(Context);
-  const {cellphone, setCellphone} = useContext(Context);
-  const {email, setEmail} = useContext(Context);
-  
+  const { whatsappNumber, setWhatsappNumber } = useContext(Context);
+  const { name, setName } = useContext(Context);
+  const { id, setId } = useContext(Context);
+  const { cellphone, setCellphone } = useContext(Context);
+  const { email, setEmail } = useContext(Context);
+
   // const handleWalletEmailChange = (event) => {
   //   const value = event.target.value.replace(/[^A-Za-z0-9\s@.]/gi, '');
   //   setWalletEmail(value);
   // };
 
   // whatsapp number
-  
+
   // const handleWhatsappNumberChange = (event) => {
   //   const value = event.target.value.replace(/[^0-9]+/g, '');
   //   setWhatsappNumber(value);
@@ -52,7 +52,6 @@ export default function FormPropsTextFieldsCreditCertificate({ handleCancel }) {
   //   setEmail(value);
   // };
 
-  
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Submit');
@@ -60,13 +59,13 @@ export default function FormPropsTextFieldsCreditCertificate({ handleCancel }) {
 
   return (
     <Box
-    component="form"
-    onSubmit={handleSubmit}
-    sx={{
-      '& .MuiTextField-root': { m: 1, width: '100%' },
-    }}
-    noValidate
-    autoComplete="off"
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{
+        '& .MuiTextField-root': { m: 1, width: '100%' },
+      }}
+      noValidate
+      autoComplete="off"
     >
       <div>
         {/* TextField for wallet email */}
