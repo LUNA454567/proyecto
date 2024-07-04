@@ -36,7 +36,7 @@ export default function TPagareFinaval() {
           <TableContainer>
             <Box style={{ textAlign: 'center', fontSize: '10px' }}>
               <h2>
-                <b> PAGARE No.5891015543 </b>
+                <b> PAGARE No.5891015543. </b>
               </h2>
             </Box>
 
