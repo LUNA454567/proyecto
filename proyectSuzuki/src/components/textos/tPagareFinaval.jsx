@@ -55,7 +55,7 @@ export default function TPagareFinaval() {
                     }}
                   >
                     <Typography variant="subtitle1" fontSize={10}>
-                      PAGARE No.5891015543popoii <br /> SUMA ADEUDADA POR CONCEPTO DE
+                      PAGARE No.5891015543 <br /> SUMA ADEUDADA POR CONCEPTO DE
                       CAPITAL <br />
                       Por Valor de: ($_______________) Valor en letras: <br />{' '}
                       TASA DE INTERÉS REMUNERATORIA EFECTIVA ANUAL: <br /> PLAZO
@@ -305,7 +305,7 @@ export default function TPagareFinaval() {
                     display: 'flex',
                     justifyContent: 'center',
                     // border: '1px dashed red',
-                    marginTop: '28px',
+                    marginTop: '27px',
                   }}
                 >
                   <Table>
@@ -362,7 +362,7 @@ export default function TPagareFinaval() {
                     display: 'flex',
                     justifyContent: 'center',
                     // border: '1px dashed red',
-                    marginTop: '28px',
+                    marginTop: '3px',
                   }}
                 >
                   <Table>

@@ -1,4 +1,3 @@
-// SearchComponent.js
 import React, { useState } from 'react';
 import Input from '@mui/joy/Input';
 import Button from '@mui/material/Button';
@@ -11,7 +10,7 @@ function SearchComponent() {
   const [searchTerm, setSearchTerm] = useState('');
   const [showTable, setShowTable] = useState(false); // Estado para mostrar la tabla
   const [showAlert, setShowAlert] = useState(false);
-
+  const [tableData, setTableData] = useState([]); // Estado para almacenar los datos de la tabla
 
   const handleInputChange = (event) => {
     setSearchTerm(event.target.value);
@@ -19,14 +18,39 @@ function SearchComponent() {
     setShowTable(false); // Oculta la tabla al empezar a escribir
   };
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (!searchTerm.trim()) {
       setShowAlert(true); // Muestra la alerta si no se ha ingresado nada
       setShowTable(false); // Asegúrate de que la tabla esté oculta
       return;
     }
 
-    setShowTable(true); // Muestra la tabla cuando hay datos en el campo de entrada
+    try {
+      // Realiza la solicitud a tu API real
+      const response = await fetch(
+        `http://192.168.6.100:10010/web/services/warehouse/numberBill/?pagare=${searchTerm}`
+      );
+      const data = await response.json();
+
+      // Verifica si se obtuvieron datos válidos
+      if (
+        data &&
+        data.warehouse_GetBillByNumber_R &&
+        data.warehouse_GetBillByNumber_R.length > 0
+      ) {
+        setTableData(data.warehouse_GetBillByNumber_R); // Actualiza el estado con los datos obtenidos
+        setShowTable(true); // Muestra la tabla después de obtener los datos
+      } else {
+        // Si no se encontraron datos válidos, muestra una alerta
+        setShowTable(false);
+        setShowAlert(true);
+      }
+    } catch (error) {
+      console.error('Error fetching data: ', error);
+      // Manejar el error, mostrar una alerta o cualquier otro feedback al usuario
+      setShowTable(false);
+      setShowAlert(true);
+    }
   };
 
   return (
@@ -57,13 +81,15 @@ function SearchComponent() {
         >
           <div>
             <div>Error</div>
-            <div>Por favor Ingresa el numero de factura</div>
+            <div>
+              No se encontraron datos para el número de factura ingresado.
+            </div>
           </div>
         </Alert>
       )}
 
       {/* Renderiza la tabla si showTable es true */}
-      {showTable && <CustomTable />}
+      {showTable && <CustomTable data={tableData} />}
     </Box>
   );
 }
