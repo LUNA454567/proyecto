@@ -5,6 +5,7 @@ import { Box } from '@mui/material';
 import Alert from '@mui/joy/Alert';
 import ReportIcon from '@mui/icons-material/Report';
 import CustomTable from '../table/tableInfoClient';
+import { fetchBillByNumber } from '../../services/apiService'; 
 
 function SearchComponent() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -26,11 +27,7 @@ function SearchComponent() {
     }
 
     try {
-      // Realiza la solicitud a tu API real
-      const response = await fetch(
-        `http://192.168.6.100:10010/web/services/warehouse/numberBill/?pagare=${searchTerm}`
-      );
-      const data = await response.json();
+      const data = await fetchBillByNumber(searchTerm);
 
       // Verifica si se obtuvieron datos válidos
       if (

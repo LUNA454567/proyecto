@@ -1,8 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/joy/Grid';
-import '../style/printStyles.css'; // Asegúrate de importar el archivo CSS aquí
-// import TableRow from '@mui/material/TableRow';
+import '../style/printStyles.css';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import { TableContainer } from '@mui/material';
@@ -11,13 +10,48 @@ import { useReactToPrint } from 'react-to-print';
 import Button from '@mui/material/Button';
 import Table from '@mui/joy/Table';
 import { Typography } from '@mui/material';
+import { fetchBillByNumber } from '../../services/apiService';
+import searchTerm  from '../search/search';
 
 export default function TPagareFinaval() {
-  const contentRef = useRef(); // Crear el ref
-
+  const contentRef = useRef();
+  const [billData, setBillData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const searchTerm = 'searchTerm';
   const handlePrint = useReactToPrint({
     content: () => contentRef.current,
   });
+
+  useEffect(() => {
+    console.log('useEffect triggered');
+    const getBillData = async () => {
+      try {
+        console.log('Fetching data...');
+        const data = await fetchBillByNumber{searchTerm};
+        console.log('Data fetched:', data);
+        setBillData(data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching bill data:', error);
+        setLoading(false);
+      }
+    };
+
+    getBillData();
+  }, []);
+
+  if (loading) {
+    console.log('Loading data...');
+    return <p>Loading...</p>;
+  }
+
+  if (!billData) {
+    console.log('No data available');
+    return <p>No data available</p>;
+  }
+
+  console.log('Data available:', billData);
+
 
   return (
     <>
@@ -55,8 +89,8 @@ export default function TPagareFinaval() {
                     }}
                   >
                     <Typography variant="subtitle1" fontSize={10}>
-                      PAGARE No.5891015543 <br /> SUMA ADEUDADA POR CONCEPTO DE
-                      CAPITAL <br />
+                      PAGARE No.{billData.NRO_PAGARE} <br /> SUMA ADEUDADA POR
+                      CONCEPTO DE CAPITAL <br />
                       Por Valor de: ($_______________) Valor en letras: <br />{' '}
                       TASA DE INTERÉS REMUNERATORIA EFECTIVA ANUAL: <br /> PLAZO
                       DE PAGO (MENSUAL): _______________________ <br /> FECHA DE

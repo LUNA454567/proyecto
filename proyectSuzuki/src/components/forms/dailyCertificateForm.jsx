@@ -15,11 +15,16 @@ export default function FormPropsTextFieldsDia({ handleCancel }) {
   const [error, setError] = useState({
     error: false,
     message: ' ',
+    invoiceNumberCons: { error: false, message: '' },
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Submit');
+    // Limpiar los campos después de enviar
+    setNameCons('');
+    setIdCons('');
+    setInvoiceNumberCons('');
   };
 
   return (
