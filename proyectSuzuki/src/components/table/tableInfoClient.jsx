@@ -2,9 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types'; // Importa PropTypes
 import Table from '@mui/joy/Table';
 import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function CustomTable({ data }) {
+  console.log(data)
+  //añadir 
+  const navigate = useNavigate()
+
+  const handleredirect = (id) =>{
+    console.log(id)
+    navigate(`viewGenerateFormats/${id}`)
+  }
   return (
     <Table aria-label="basic table">
       <thead>
@@ -28,8 +36,9 @@ function CustomTable({ data }) {
             <td>{item.LINEA.trim()}</td>
             <td>{item.FINANCIADORA}</td>
             <td>
-              <Link to="/viewGenerateFormats">
                 <Button
+                //se añade onclick
+                onClick={() => handleredirect(item.NRO_PAGARE)}
                   sx={{
                     mb: 2,
                     bgcolor: '#0050a0',
@@ -44,7 +53,6 @@ function CustomTable({ data }) {
                 >
                   GENERAR FORMATOS
                 </Button>
-              </Link>
             </td>
           </tr>
         ))}

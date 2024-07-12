@@ -23,7 +23,8 @@ export const App = () => {
         <Routes>
           {/* RUTAS SIN PROTECCIÓN */}
           <Route path="/" element={<FormatGenerationCredits />}></Route>
-          <Route path="/viewGenerateFormats" Component={viewGenerateFormats} />
+          {/* se debe añadir el id para que funcione y lo tenga anclado */}
+          <Route path="/viewGenerateFormats/:id" Component={viewGenerateFormats} />
           <Route
             path="/viewGenerationCredits"
             Component={viewGenerationCredits}

@@ -11,34 +11,41 @@ import Button from '@mui/material/Button';
 import Table from '@mui/joy/Table';
 import { Typography } from '@mui/material';
 import { fetchBillByNumber } from '../../services/apiService';
-import searchTerm  from '../search/search';
+//se añade
+import { useParams } from 'react-router-dom';
 
 export default function TPagareFinaval() {
+  //se añade
+  const { id } = useParams();
+  console.log(id, 'idddd');
+
   const contentRef = useRef();
   const [billData, setBillData] = useState(null);
+  console.log(billData, 'aquii dataaaaaaaa');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const searchTerm = 'searchTerm';
   const handlePrint = useReactToPrint({
     content: () => contentRef.current,
   });
 
   useEffect(() => {
-    console.log('useEffect triggered');
+    console.log('useEffect triggered witg searchTerm', searchTerm);
     const getBillData = async () => {
       try {
-        console.log('Fetching data...');
-        const data = await fetchBillByNumber{searchTerm};
-        console.log('Data fetched:', data);
-        setBillData(data);
-        setLoading(false);
+        const dataResponse = await fetchBillByNumber(id);
+        console.log('aquiiiiiiiiii:', id, dataResponse);
+        //se añade
+        setBillData(dataResponse.warehouse_GetBillByNumber_R);
       } catch (error) {
-        console.error('Error fetching bill data:', error);
+        console.error('Error fetching data:', error);
+        setError(error);
+      } finally {
         setLoading(false);
       }
     };
-
     getBillData();
-  }, []);
+  }, [id]);
 
   if (loading) {
     console.log('Loading data...');
@@ -51,7 +58,6 @@ export default function TPagareFinaval() {
   }
 
   console.log('Data available:', billData);
-
 
   return (
     <>
@@ -89,8 +95,8 @@ export default function TPagareFinaval() {
                     }}
                   >
                     <Typography variant="subtitle1" fontSize={10}>
-                      PAGARE No.{billData.NRO_PAGARE} <br /> SUMA ADEUDADA POR
-                      CONCEPTO DE CAPITAL <br />
+                      PAGARE No.{billData[0].NRO_PAGARE} <br /> SUMA ADEUDADA
+                      POR CONCEPTO DE CAPITAL <br />
                       Por Valor de: ($_______________) Valor en letras: <br />{' '}
                       TASA DE INTERÉS REMUNERATORIA EFECTIVA ANUAL: <br /> PLAZO
                       DE PAGO (MENSUAL): _______________________ <br /> FECHA DE

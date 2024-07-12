@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/joy/Grid';
 import '../style/printStyles.css'; // Asegúrate de importar el archivo CSS aquí
@@ -10,60 +10,19 @@ import { TableContainer } from '@mui/material';
 import CardActions from '@mui/material/CardActions';
 import { useReactToPrint } from 'react-to-print';
 import Button from '@mui/material/Button';
-import { Typography } from '@mui/material';
-import { fetchBillByNumber } from '../../services/apiService';
-//se añade
-import { useParams } from 'react-router-dom';
+import { Context } from '../../context/context.jsx';
 
-export default function TPagareFinaval() {
-  const { id } = useParams();
-
+export default function TreplacePladgeWithoutCreditorTenure() {
   const contentRef = useRef(); // Crear el ref
   const [borderAxis] = React.useState('xBetween');
-  const [billData, setBillData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const searchTerm = 'searchTerm';
+
+  const { nameLegalRepresentative, idNumber, cityExpedition } =
+    useContext(Context);
 
   const handlePrint = useReactToPrint({
     content: () => contentRef.current,
   });
 
-  useEffect(() => {
-    console.log('useEffect triggered with searchTerm:', searchTerm);
-    const getBillData = async () => {
-      try {
-        const dataResponse = await fetchBillByNumber(id);
-        console.log('aquiiiiiiiiii:', id, dataResponse);
-        //se añade
-        setBillData(dataResponse.warehouse_GetBillByNumber_R);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setError(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getBillData();
-  }, [id]);
-
-  if (loading) {
-    console.log('Loading...');
-    return <p>Loading...</p>;
-  }
-
-  if (error) {
-    console.error('Error loading data:', error);
-    return <p>Error loading data</p>;
-  }
-
-  if (!billData) {
-    console.log('No data available');
-    return <p>No hay datos disponibles</p>;
-  }
-
-  console.log('Rendering data:', billData);
   return (
     <>
       <Grid item xs={12}>
@@ -78,36 +37,15 @@ export default function TPagareFinaval() {
           ref={contentRef}
         >
           <TableContainer>
-            <Box style={{ textAlign: 'center', fontSize: '10px' }}>
+            <Box style={{ textAlign: 'center', fontSize: '15px' }}>
               <h2>
-                <b> PAGARE No.{billData[0].NRO_PAGARE} </b>
+                <b> PRENDA SIN TENENCIA DEL ACREEDOR </b>
               </h2>
             </Box>
 
             <Table aria-label="basic table">
               <thead></thead>
               <tbody>
-                <tr>
-                  <td
-                    style={{
-                      width: '90px',
-                      // border: '3px dashed purple',
-                      wordWrap: 'break-word',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'normal',
-                    }}
-                  >
-                    <Typography
-                      variant="subtitle1"
-                      fontWeight="bold"
-                      fontSize={10}
-                    >
-                      Lugar y Fecha: {billData[0].CIUDAD},{' '}
-                      {billData[0].FECHA_PAGARE}
-                    </Typography>
-                  </td>
-                </tr>
                 <tr>
                   <TableCell
                     sx={{
@@ -116,67 +54,34 @@ export default function TPagareFinaval() {
                       fontSize: '10px',
                     }}
                   >
-                    Yo ALBERT JHOANY TREJOS VELARDE, mayor (es) de edad, con
-                    domicilio en PALESTINA en CALLE 8 A N 1-24 RENAN BARCO
-                    LOPEZ, identificado (a) (os) con la (s) cedula (s) de
-                    ciudadanía No.(s) 9847172 expedida (s) en PALESTINA
-                    respectivamente, actuando en mí (nuestros) propio (s) nombre
-                    (s), por medio del presente PAGARE hago (hacemos) constar
-                    que DEBO (Debemos) y me (nos) comprometo (comprometemos) a
-                    pagar a la sociedad <b>SUZUKI MOTOR DE COLOMBIA S.A.</b>{' '}
-                    Sociedad con domicilio principal en Pereira – Risaralda, o a
-                    su orden en sus oficinas de MANIZALES la suma de UN MILLON
+                    Entre los suscritos a saber ALBERT JHOANY TREJOS VELARDE,
+                    mayor de edad, domiciliado en PALESTINA en CALLE 8 A N 1-24
+                    RENAN BARCO LOPEZ, identificado con la cédula de ciudadanía
+                    No. 9847172 expedida en PALESTINA , obrando en su propio
+                    nombre e interés, de una parte, quien en adelante se
+                    denominará EL DEUDOR y de la otra, {nameLegalRepresentative}{' '}
+                    , mayor de edad, domiciliado en MANIZALES en Cra. 22
+                    No.15-45, identificado con la cédula de ciudadanía No.
+                    {idNumber} expedida en {cityExpedition}, obrando en nombre y
+                    representación en calidad de REPRESENTANTE LEGAL de SUZUKI
+                    MOTOR DE COLOMBIA S.A. con NIT 891.410.137-2, entidad
+                    domiciliada en Pereira y en este caso sucursal MANIZALES,
+                    todo lo cual acredita con el Certificado expedido por la
+                    Cámara de Comercio, que presenta y hace parte integral del
+                    presente documento, quien en adelante se denominará EL
+                    ACREEDOR, se ha celebrado un Contrato de Prenda Comercial
+                    Abierta de Primer Grado sin tenencia de EL ACREEDOR,
+                    contenido en las siguientes cláusulas : PRIMERA: EL DEUDOR
+                    constituye a favor de EL ACREEDOR, derecho de Prenda Abierta
+                    sin Tenencia para garantizar al ACREEDOR, el cumplimiento de
+                    obligaciones de crédito hasta por la suma de UN MILLON
                     SETECIENTOS CINCO MIL DOSCIENTOS CINCUENTA Y CUATRO PESOS
-                    MCTE.. - ($1.705.254) mcte. En un plazo de TRES - (3) meses
-                    y por TRES (3) cuotas mensuales, iguales y sucesivas que
-                    incluyen capital, seguro colectivo de deudores e intereses
-                    remuneratorios, por el valor de QUINIENTOS SESENTA Y OCHO
-                    MIL CUATROCIENTOS DIECIOCHO PESOS MCTE. ($568.418) moneda
-                    legal colombiana cada una, la primera cuota será exigible el
-                    día 6 de Mayo de 2024, y así sucesivamente el día SEIS (6)
-                    de cada uno de los meses venideros y 0 cuotas extras
-                    pagaderas así: . Para un total de UN MILLON SETECIENTOS
-                    CINCO MIL DOSCIENTOS CINCUENTA Y CUATRO PESOS MCTE.
-                    ($1.705.254) moneda legal. Durante el plazo reconoceré (mos)
-                    intereses liquidados sobre los saldos pendientes del capital
-                    a la tasa de CERO por ciento ( 0 %) Efectiva Anual, pagadero
-                    mes vencido, los cuales están incluidos en cada una de las
-                    cuotas pactadas. En caso de mora en el pago de una o más
-                    cuotas, pagare los intereses corrientes fijados por la ley y
-                    de hecho quedan vencidos todos los plazos y por tanto
-                    cancelaré en forma inmediata la totalidad de las cuotas
-                    restantes. La prórroga del plazo para el pago de una o más
-                    cuotas vencidas o el recibo de abonos parciales o en
-                    cantidad mayor a la convenida, no implica novación y en
-                    general, la omisión ocasional de{' '}
-                    <b> SUZUKI MOTOR DE COLOMBIA S.A.</b> en el ejercicio de uno
-                    cualquiera de los derechos derivados de este instrumentos no
-                    significa renuncia ni modificación de este ni de los demás
-                    derechos que por él tiene. El recibo de pago de una o más
-                    cuotas no presume el pago de los intereses correspondientes
-                    ni de mora, en su caso; autorizo a{' '}
-                    <b>SUZUKI MOTOR DE COLOMBIA S.A.</b> para anotar los pagos
-                    en los documentos o proformas que considere menester
-                    expresamente manifiesto que serán de mi cargo todos los
-                    gastos y costas judiciales y extrajudiciales que se
-                    causaren, incluyendo en ellas los honorarios de Abogados.
-                    Así mismo manifiesto (manifestamos) que renuncio
-                    (renunciamos) al derecho de ser requerido(s) judicial o
-                    extrajudicialmente para ser constituido en mora. La emisión
-                    del pagaré anteriormente consignado tiene como causa el
-                    CONTRATO DE COMPRAVENTA CON PRENDA SIN TENENCIA DEL ACREEDOR
-                    celebrado entre <b>SUZUKI MOTOR DE COLOMBIA S.A.</b>{' '}
-                    sociedad con domicilio principal en la ciudad de
-                    Pereira-Risaralda, quien para los efectos del presente
-                    CONTRATO, se denominará la VENDEDORA por una parte y ALBERT
-                    JHOANY TREJOS VELARDE mayor de edad, vecino de MANIZALES
-                    Residenciado en PALESTINA en CALLE 8 A N 1-24 RENAN BARCO
-                    LOPEZ; Titular de la cédula de ciudadanía No.9847172 de
-                    PALESTINA , quien se denominará el
-                    <b>COMPRADOR</b> por la otra parte, que se contiene y se
-                    rige por las siguientes cláusulas: PRIMERA: El VENDEDOR
-                    entrega en calidad de venta al <b>COMPRADOR</b> un vehículo
-                    motor de las siguientes características:
+                    MCTE. ($1.705.254) MCTE. SEGUNDA : La Prenda Abierta sin
+                    Tenencia que por este documento se constituye por parte de
+                    EL DEUDOR a favor de EL ACREEDOR, conforme a los Art. 1207 y
+                    s,s, del código de comercio, recae sobre un automotor
+                    (Motocicleta) de su exclusiva propiedad, el cual se
+                    especifica y detalla a continuación:
                   </TableCell>
                 </tr>
 
