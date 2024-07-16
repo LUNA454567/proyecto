@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect  } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/joy/Grid';
 import '../style/printStyles.css'; // Asegúrate de importar el archivo CSS aquí
@@ -8,24 +8,62 @@ import TableCell from '@mui/material/TableCell';
 import { TableBody, TableContainer } from '@mui/material';
 import Alert from '@mui/joy/Alert';
 import { Typography } from '@mui/material';
+import { fetchBillByNumber } from '../../services/apiService';
+//se añade
+import { useParams } from 'react-router-dom';
 
-// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-// import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-// import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-// import { TextField } from '@mui/material';
 import CardActions from '@mui/material/CardActions';
 import { useReactToPrint } from 'react-to-print';
 import Button from '@mui/material/Button';
 import logoHorizontal from '../../assets/img/logo.png';
 
 export default function TcertificateOfDelivery() {
+    //se añade
+    const { id } = useParams();
+    console.log(id, 'idddd');
+
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   const contentRef = useRef(); // Crear el ref
-
+  const [billData, setBillData] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const searchTerm = 'searchTerm';
   const handlePrint2 = useReactToPrint({
     content: () => contentRef.current,
   });
+
+  useEffect(() => {
+    console.log('useEffect triggered witg searchTerm', searchTerm);
+    const getBillData = async () => {
+      try {
+        const dataResponse = await fetchBillByNumber(id);
+        console.log('aquiiiiiiiiii:', id, dataResponse);
+        //se añade
+        setBillData(dataResponse.warehouse_GetBillByNumber_R);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getBillData();
+  }, [id]);
+
+  if (loading) {
+    console.log('Loading data...');
+    return <p>Loading...</p>;
+  }
+
+  if (!billData) {
+    console.log('No data available');
+    return <p>No data available</p>;
+  }
+
+  console.log('Data available:', billData);
+
+
   return (
     <>
       <Grid item xs={12}>
@@ -86,25 +124,25 @@ export default function TcertificateOfDelivery() {
                                 >
                                   <b>
                                     {' '}
-                                    PROPIETARIO:
+                                    PROPIETARIO: {billData[0].CL_NOMBRE}
                                     <br />
-                                    MARCA:
+                                    MARCA: {billData[0].MARCA}
                                     <br />
-                                    MODELO:
+                                    MODELO: {billData[0].AMODELO}
                                     <br />
-                                    TIPO:
+                                    TIPO: {billData[0].LINEA}
                                     <br />
-                                    COLOR:
+                                    COLOR: {billData[0].COLOR}
                                     <br />
-                                    MOTOR No:
+                                    MOTOR No: {billData[0].MOTOR}
                                     <br />
-                                    CHASIS No:
+                                    CHASIS No: {billData[0].CHASIS}
                                     <br />
-                                    FACTURA No:
+                                    FACTURA No: {billData[0].NRO_PAGARE}
                                     <br />
-                                    CERTIE INDIVIDUAL:
+                                    CERTIE INDIVIDUAL: {billData[0].CERT_INDIVIDUAL}
                                     <br />
-                                    CERTIFICADO DE EMISIÓN DE GASES: <br />
+                                    CERTIFICADO DE EMISIÓN DE GASES: {billData[0].CERT_GASES} <br />
                                   </b>
                                 </td>
                               </td>
@@ -125,23 +163,23 @@ export default function TcertificateOfDelivery() {
                                 <td>
                                   <b>
                                     {' '}
-                                    CEDULA:
+                                    CEDULA: {billData[0].CL_NROID}
                                     <br />
-                                    MANUAL DE MANTENIMIENTO:
+                                    MANUAL DE MANTENIMIENTO:  UNO 
                                     <br />
-                                    MANUAL DE GARANTIA:
+                                    MANUAL DE GARANTIA:  UNO 
                                     <br />
-                                    HERRAMIENTA:
+                                    HERRAMIENTA:  UNO 
                                     <br />
-                                    ESPEJOS:
+                                    ESPEJOS:  DOS 
                                     <br />
-                                    BATERIA:
+                                    BATERIA:  UNO 
                                     <br />
-                                    LLAVES:
+                                    LLAVES:  DOS 
                                     <br />
-                                    ESTADO MECANICO:
+                                    ESTADO MECANICO:  BUENO 
                                     <br />
-                                    ESTADO DE PINTURA:
+                                    ESTADO DE PINTURA:  BUENO 
                                     <br /> <br />
                                   </b>
                                 </td>
@@ -213,7 +251,7 @@ export default function TcertificateOfDelivery() {
                         <b>
                           _____________________________ <br /> PERSONA QUE
                           RECIBE <br />
-                          Ciudad:
+                          Ciudad: {billData[0].CIUDAD} 
                         </b>
                       </div>
                     </div>
@@ -236,7 +274,7 @@ export default function TcertificateOfDelivery() {
                         <b>
                           _____________________________ <br /> PERSONA QUE
                           ENTREGA <br />
-                          Fecha:
+                          {billData[0].FECHA_PAGARE} 
                         </b>
                       </div>
                     </div>

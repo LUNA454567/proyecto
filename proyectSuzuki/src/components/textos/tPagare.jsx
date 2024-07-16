@@ -12,6 +12,7 @@ import { useReactToPrint } from 'react-to-print';
 import Button from '@mui/material/Button';
 import { Typography } from '@mui/material';
 import { fetchBillByNumber } from '../../services/apiService';
+// import { obtenerUltimoValorDia } from '../../services/apiService';
 //se añade
 import { useParams } from 'react-router-dom';
 
@@ -38,30 +39,26 @@ export default function TPagareFinaval() {
         //se añade
         setBillData(dataResponse.warehouse_GetBillByNumber_R);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.log('Error fetching data:', error);
         setError(error);
       } finally {
         setLoading(false);
       }
     };
-
     getBillData();
   }, [id]);
 
   if (loading) {
-    console.log('Loading...');
+    console.log('Loading data...');
     return <p>Loading...</p>;
-  }
-
-  if (error) {
-    console.error('Error loading data:', error);
-    return <p>Error loading data</p>;
   }
 
   if (!billData) {
     console.log('No data available');
-    return <p>No hay datos disponibles</p>;
+    return <p>No data available</p>;
   }
+
+  console.log('Data available:', billData);
 
   console.log('Rendering data:', billData);
   return (
@@ -116,45 +113,50 @@ export default function TPagareFinaval() {
                       fontSize: '10px',
                     }}
                   >
-                    Yo ALBERT JHOANY TREJOS VELARDE, mayor (es) de edad, con
-                    domicilio en PALESTINA en CALLE 8 A N 1-24 RENAN BARCO
-                    LOPEZ, identificado (a) (os) con la (s) cedula (s) de
-                    ciudadanía No.(s) 9847172 expedida (s) en PALESTINA
+                    Yo {billData[0].CL_NOMBRE}, mayor (es) de edad, con
+                    domicilio en {billData[0].CL_CIUEXP} en{' '}
+                    {billData[0].CL_DIRECCION}, identificado (a) (os) con la (s)
+                    cedula (s) de ciudadanía No.(s) {billData[0].CL_NROID}{' '}
+                    expedida (s) en {billData[0].CL_CIUEXP}
                     respectivamente, actuando en mí (nuestros) propio (s) nombre
                     (s), por medio del presente PAGARE hago (hacemos) constar
                     que DEBO (Debemos) y me (nos) comprometo (comprometemos) a
-                    pagar a la sociedad <b>SUZUKI MOTOR DE COLOMBIA S.A.</b>{' '}
+                    pagar a la sociedad <b>
+                      SUZUKI MOTOR DE COLOMBIA S.A.
+                    </b>{' '}
                     Sociedad con domicilio principal en Pereira – Risaralda, o a
-                    su orden en sus oficinas de MANIZALES la suma de UN MILLON
+                    su orden en sus oficinas de {billData[0].CIUDAD} la suma de
+                    UN MILLON SETECIENTOS CINCO MIL DOSCIENTOS CINCUENTA Y
+                    CUATRO PESOS MCTE.. - {billData[0].VLR_PAGARE} mcte. En un
+                    plazo de TRES - {billData[0].PLAZO} meses y por TRES{' '}
+                    {billData[0].PLAZO} cuotas mensuales, iguales y sucesivas
+                    que incluyen capital, seguro colectivo de deudores e
+                    intereses remuneratorios, por el valor de QUINIENTOS SESENTA
+                    Y OCHO MIL CUATROCIENTOS DIECIOCHO PESOS MCTE.
+                    {billData[0].PLAZO} moneda legal colombiana cada una, la
+                    primera cuota será exigible el día {billData[0].FVTO_CTA1},
+                    y así sucesivamente el día SEIS {billData[0].FVTO_CTA1} de
+                    cada uno de los meses venideros y {billData[0].NRO_EXTRAS}{' '}
+                    cuotas extras pagaderas así: . Para un total de UN MILLON
                     SETECIENTOS CINCO MIL DOSCIENTOS CINCUENTA Y CUATRO PESOS
-                    MCTE.. - ($1.705.254) mcte. En un plazo de TRES - (3) meses
-                    y por TRES (3) cuotas mensuales, iguales y sucesivas que
-                    incluyen capital, seguro colectivo de deudores e intereses
-                    remuneratorios, por el valor de QUINIENTOS SESENTA Y OCHO
-                    MIL CUATROCIENTOS DIECIOCHO PESOS MCTE. ($568.418) moneda
-                    legal colombiana cada una, la primera cuota será exigible el
-                    día 6 de Mayo de 2024, y así sucesivamente el día SEIS (6)
-                    de cada uno de los meses venideros y 0 cuotas extras
-                    pagaderas así: . Para un total de UN MILLON SETECIENTOS
-                    CINCO MIL DOSCIENTOS CINCUENTA Y CUATRO PESOS MCTE.
-                    ($1.705.254) moneda legal. Durante el plazo reconoceré (mos)
-                    intereses liquidados sobre los saldos pendientes del capital
-                    a la tasa de CERO por ciento ( 0 %) Efectiva Anual, pagadero
-                    mes vencido, los cuales están incluidos en cada una de las
-                    cuotas pactadas. En caso de mora en el pago de una o más
-                    cuotas, pagare los intereses corrientes fijados por la ley y
-                    de hecho quedan vencidos todos los plazos y por tanto
-                    cancelaré en forma inmediata la totalidad de las cuotas
-                    restantes. La prórroga del plazo para el pago de una o más
-                    cuotas vencidas o el recibo de abonos parciales o en
-                    cantidad mayor a la convenida, no implica novación y en
-                    general, la omisión ocasional de{' '}
-                    <b> SUZUKI MOTOR DE COLOMBIA S.A.</b> en el ejercicio de uno
-                    cualquiera de los derechos derivados de este instrumentos no
-                    significa renuncia ni modificación de este ni de los demás
-                    derechos que por él tiene. El recibo de pago de una o más
-                    cuotas no presume el pago de los intereses correspondientes
-                    ni de mora, en su caso; autorizo a{' '}
+                    MCTE. ({billData[0].VLR_PAGARE}) moneda legal. Durante el
+                    plazo reconoceré (mos) intereses liquidados sobre los saldos
+                    pendientes del capital a la tasa de CERO por ciento (
+                    {billData[0].TASAEA} ) Efectiva Anual, pagadero mes vencido,
+                    los cuales están incluidos en cada una de las cuotas
+                    pactadas. En caso de mora en el pago de una o más cuotas,
+                    pagare los intereses corrientes fijados por la ley y de
+                    hecho quedan vencidos todos los plazos y por tanto cancelaré
+                    en forma inmediata la totalidad de las cuotas restantes. La
+                    prórroga del plazo para el pago de una o más cuotas vencidas
+                    o el recibo de abonos parciales o en cantidad mayor a la
+                    convenida, no implica novación y en general, la omisión
+                    ocasional de <b> SUZUKI MOTOR DE COLOMBIA S.A.</b> en el
+                    ejercicio de uno cualquiera de los derechos derivados de
+                    este instrumentos no significa renuncia ni modificación de
+                    este ni de los demás derechos que por él tiene. El recibo de
+                    pago de una o más cuotas no presume el pago de los intereses
+                    correspondientes ni de mora, en su caso; autorizo a{' '}
                     <b>SUZUKI MOTOR DE COLOMBIA S.A.</b> para anotar los pagos
                     en los documentos o proformas que considere menester
                     expresamente manifiesto que serán de mi cargo todos los
@@ -168,14 +170,15 @@ export default function TPagareFinaval() {
                     celebrado entre <b>SUZUKI MOTOR DE COLOMBIA S.A.</b>{' '}
                     sociedad con domicilio principal en la ciudad de
                     Pereira-Risaralda, quien para los efectos del presente
-                    CONTRATO, se denominará la VENDEDORA por una parte y ALBERT
-                    JHOANY TREJOS VELARDE mayor de edad, vecino de MANIZALES
-                    Residenciado en PALESTINA en CALLE 8 A N 1-24 RENAN BARCO
-                    LOPEZ; Titular de la cédula de ciudadanía No.9847172 de
-                    PALESTINA , quien se denominará el
+                    CONTRATO, se denominará la VENDEDORA por una parte y{' '}
+                    {billData[0].CL_NOMBRE} mayor de edad, vecino de{' '}
+                    {billData[0].CIUDAD} Residenciado en {billData[0].CL_CIUDAD}{' '}
+                    en {billData[0].CL_DIRECCION}; Titular de la cédula de
+                    ciudadanía No.{billData[0].CL_NROID} de{' '}
+                    {billData[0].CL_CIUEXP}, quien se denominará el
                     <b>COMPRADOR</b> por la otra parte, que se contiene y se
                     rige por las siguientes cláusulas: PRIMERA: El VENDEDOR
-                    entrega en calidad de venta al <b>COMPRADOR</b> un vehículo
+                    entrega en calidad de venta al <b> COMPRADOR</b> un vehículo
                     motor de las siguientes características:
                   </TableCell>
                 </tr>
@@ -191,33 +194,33 @@ export default function TPagareFinaval() {
                         <td>
                           <b>CLASE:</b>
                         </td>
-                        <td>variable</td>
+                        <td>{billData[0].CLASE}</td>
                         <td>CHASIS N°:</td>
-                        <td>variable</td>
+                        <td>{billData[0].CHASIS}</td>
                       </tr>
                       <tr style={{ textAlign: 'center ', fontSize: '10px' }}>
                         <td>MARCA:</td>
-                        <td>variable</td>
+                        <td>{billData[0].MARCA}</td>
                         <td>MOTOR N°:</td>
-                        <td>variable</td>
+                        <td>{billData[0].MOTOR}</td>
                       </tr>
                       <tr style={{ textAlign: 'center ', fontSize: '10px' }}>
                         <td>MODELO:</td>
-                        <td>variable</td>
+                        <td>{billData[0].AMODELO}</td>
                         <td>COLOR:</td>
-                        <td>variable</td>
+                        <td>{billData[0].COLOR}</td>
                       </tr>
                       <tr style={{ textAlign: 'center ', fontSize: '10px' }}>
                         <td>TIPO:</td>
-                        <td>variable</td>
+                        <td>{billData[0].LINEA}</td>
                         <td>PLACAS N°</td>
-                        <td>variable</td>
+                        <td>{billData[0].PLACA}</td>
                       </tr>
                       <tr style={{ textAlign: 'center ', fontSize: '10px' }}>
                         <td>CILINDRADA:</td>
-                        <td>variable</td>
+                        <td>{billData[0].CILINDRAJE} CC</td>
                         <td>CERTIFICADO INDIVIDUAL:</td>
-                        <td>variable</td>
+                        <td>{billData[0].CERT_INDIVIDUAL}</td>
                       </tr>
                     </tbody>
                   </Table>
@@ -232,20 +235,24 @@ export default function TPagareFinaval() {
                   >
                     <b>SEGUNDA</b> : El precio total de esta venta es la suma de
                     SIETE MILLONES CIENTO VEINTISIETE MIL CINCUENTA Y CUATRO
-                    PESOS MCTE. ($7.127.054) moneda legal, que el
+                    PESOS MCTE. (${billData[0].VLR_FACTURA}) moneda legal, que
+                    el
                     <b> COMPRADOR</b> pagará a la <b> VENDEDORA</b> o a su orden
-                    en la ciudad de MANIZALES así: a) la suma de CINCO MILLONES
-                    CUATROCIENTOS VEINTIUNO MIL OCHOCIENTOS PESOS MCTE.
-                    ($5.421.800) moneda legal, valor de cuota inicial que la
+                    en la ciudad de {billData[0].CIUDAD} así: a) la suma de
+                    CINCO MILLONES CUATROCIENTOS VEINTIUNO MIL OCHOCIENTOS PESOS
+                    MCTE. (${billData[0].VLR_INICIA}) moneda legal, valor de
+                    cuota inicial que la
                     <b> VENDEDORA</b> declara recibida a satisfacción de manos
                     del comprador. b)la suma de UN MILLON SETECIENTOS CINCO MIL
-                    DOSCIENTOS CINCUENTA Y CUATRO PESOS MCTE. ($1.705.254)
-                    moneda legal, valor del saldo del precio del vehículo que el{' '}
-                    <b>COMPRADOR</b> pagará a la <b> VENDEDORA</b> en TRES (3)
-                    cuotas mensuales iguales y sucesivas cada una de QUINIENTOS
-                    SESENTA Y OCHO MIL CUATROCIENTOS DIECIOCHO PESOS MCTE.
-                    ($568.418) moneda legal, la primera de ellas el día 6 de
-                    Mayo de 2024 y CERO (0) cuota(s) extra(s) pagadera(s) así:
+                    DOSCIENTOS CINCUENTA Y CUATRO PESOS MCTE. ($
+                    {billData[0].VLR_PAGARE}) moneda legal, valor del saldo del
+                    precio del vehículo que el <b>COMPRADOR</b> pagará a la{' '}
+                    <b> VENDEDORA</b> en TRES ({billData[0].PLAZO}) cuotas
+                    mensuales iguales y sucesivas cada una de QUINIENTOS SESENTA
+                    Y OCHO MIL CUATROCIENTOS DIECIOCHO PESOS MCTE. ($
+                    {billData[0].VLR_CUOTA}) moneda legal, la primera de ellas
+                    el día {billData[0].FVTO_CTA1} y {billData[0].NRO_EXTRAS}{' '}
+                    (0) cuota(s) extra(s) pagadera(s) así:
                   </TableCell>
                 </tr>
                 <tr>
@@ -337,8 +344,8 @@ export default function TPagareFinaval() {
                     cédula(s) de ciudadanía número (s) de - de ,respectivamente
                     quien responderá en forma solidaria e indivisiblemente por
                     las obligaciones aquí establecidas. En constancia se firma
-                    el presente documentos en MANIZALES el dia 6 de Abril de
-                    2024
+                    el presente documentos en {billData[0].CIUDAD} el dia{' '}
+                    {billData[0].FECHA_PAGARE}
                   </TableCell>
                 </tr>
                 <Box
@@ -385,9 +392,9 @@ export default function TPagareFinaval() {
                           EL COMPRADOR DEUDOR
                         </span>
                         <br />
-                        ALBERT JHOANY TREJOS VELARDE
+                        {billData[0].CL_NOMBRE}
                         <br />
-                        C.C. No.9847172
+                        C.C. No.{billData[0].CL_NROID}
                         <br />
                       </TableCell>
                       <TableCell sx={{ padding: '8px', fontSize: '10px' }}>
@@ -434,12 +441,10 @@ export default function TPagareFinaval() {
                         <span style={{ marginRight: '20px' }}>
                           {' '}
                           {/* Reducido el margen para adaptarse mejor */}
-                          EL COMPRADOR DEUDOR
+                          DEUDOR
                         </span>
                         <br />
-                        ALBERT JHOANY TREJOS VELARDE
-                        <br />
-                        C.C. No.9847172
+                        C.C. No
                         <br />
                       </TableCell>
                       <TableCell sx={{ padding: '8px', fontSize: '10px' }}>
@@ -476,12 +481,10 @@ export default function TPagareFinaval() {
                         <span style={{ marginRight: '20px' }}>
                           {' '}
                           {/* Reducido el margen para adaptarse mejor */}
-                          EL COMPRADOR DEUDOR
+                          DEUDOR
                         </span>
                         <br />
-                        ALBERT JHOANY TREJOS VELARDE
-                        <br />
-                        C.C. No.9847172
+                        C.C. No.
                         <br />
                       </TableCell>
                       <TableCell sx={{ padding: '8px', fontSize: '10px' }}>

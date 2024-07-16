@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/joy/Grid';
 import '../style/printStyles.css'; // Asegúrate de importar el archivo CSS aquí
@@ -7,22 +7,59 @@ import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import { TableBody, TableContainer } from '@mui/material';
 import Alert from '@mui/joy/Alert';
-// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-// import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-// import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-// import { TextField } from '@mui/material';
 import { useReactToPrint } from 'react-to-print';
 import CardActions from '@mui/material/CardActions';
 import Button from '@mui/material/Button';
 import { Typography } from '@mui/material';
+//se añade
+import { useParams } from 'react-router-dom';
+import { fetchBillByNumber } from '../../services/apiService';
+
 
 export default function Ttrading() {
+  //se añade
+  const { id } = useParams();
+  console.log(id, 'idddd');
+
   const contentRef = useRef(); // Crear el ref
+  const searchTerm = 'searchTerm';
+  const [billData, setBillData] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const handlePrint3 = useReactToPrint({
     content: () => contentRef.current,
   });
 
+  useEffect(() => {
+    console.log('useEffect triggered witg searchTerm', searchTerm);
+    const getBillData = async () => {
+      try {
+        const dataResponse = await fetchBillByNumber(id);
+        console.log('aquiiiiiiiiii:', id, dataResponse);
+        //se añade
+        setBillData(dataResponse.warehouse_GetBillByNumber_R);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getBillData();
+  }, [id]);
+
+  if (loading) {
+    console.log('Loading data...');
+    return <p>Loading...</p>;
+  }
+
+  if (!billData) {
+    console.log('No data available');
+    return <p>No data available</p>;
+  }
+
+  console.log('Data available:', billData);
   // const [selectedDate, setSelectedDate] = useState(new Date());
   return (
     <>
@@ -40,7 +77,7 @@ export default function Ttrading() {
           <TableContainer>
             <Box style={{ textAlign: 'center', fontSize: '10px' }}>
               <h2>
-                <b> CONTRATO DE COMPRAVENTA No 5891015543 </b>
+                <b> CONTRATO DE COMPRAVENTA No {billData[0].NRO_PAGARE} </b>
               </h2>
             </Box>
             <Table aria-label="basic table">
@@ -52,7 +89,6 @@ export default function Ttrading() {
                       // border: '4px dashed blue',
                       width: '100%',
                       paddingLeft: '15px',
-                      fontSize: '14px',
                       textAlign: 'justify',
                        fontSize: '10px'
                     }}
@@ -115,7 +151,7 @@ export default function Ttrading() {
                     }}
                   >
                     Este documeto hace parte integral de la factura de venta
-                    N°.5891015543
+                    N°. {billData[0].NRO_PAGARE}
                   </td>
                 </tr>
                 <tr style={{ border: '3px dashed red' }}>
@@ -138,9 +174,7 @@ export default function Ttrading() {
                         }}
                       >
                         <b>
-                          _____________________________ <br /> PERSONA QUE
-                          RECIBE <br />
-                          Ciudad:
+                          _____________________________ <br /> GIRADOR
                         </b>
                       </div>
                     </div>
@@ -160,9 +194,8 @@ export default function Ttrading() {
                         }}
                       >
                         <b>
-                          _____________________________ <br /> PERSONA QUE
-                          ENTREGA <br />
-                          Fecha:
+                          _____________________________ <br />ACEPTADA <br />
+                        
                         </b>
                       </div>
                     </div>

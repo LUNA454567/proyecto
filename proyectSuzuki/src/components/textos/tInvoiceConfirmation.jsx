@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/joy/Grid';
 import '../style/printStyles.css'; // Asegúrate de importar el archivo CSS aquí
@@ -13,6 +13,9 @@ import { useReactToPrint } from 'react-to-print';
 import { Typography } from '@mui/material';
 import logoHorizontal from '../../assets/img/logo.png';
 import { JoinRight } from '@mui/icons-material';
+import { fetchBillByNumber } from '../../services/apiService';
+//se añade
+import { useParams } from 'react-router-dom';
 
 export default function TinvoiceConfirmation() {
   const contentRef = useRef(); // Crear el ref
@@ -20,7 +23,46 @@ export default function TinvoiceConfirmation() {
   const handlePrint = useReactToPrint({
     content: () => contentRef.current,
   });
+  const { id } = useParams();
+
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [billData, setBillData] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const searchTerm = 'searchTerm';
+
+  useEffect(() => {
+    console.log('useEffect triggered with searchTerm:', searchTerm);
+    const getBillData = async () => {
+      try {
+        const dataResponse = await fetchBillByNumber(id);
+        console.log('aquiiiiiiiiii:', id, dataResponse);
+        //se añade
+        setBillData(dataResponse.warehouse_GetBillByNumber_R);
+      } catch (error) {
+        console.log('Error fetching data:', error);
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getBillData();
+  }, [id]);
+
+  if (loading) {
+    console.log('Loading data...');
+    return <p>Loading...</p>;
+  }
+
+  if (!billData) {
+    console.log('No data available');
+    return <p>No data available</p>;
+  }
+
+  console.log('Data available:', billData);
+
+  console.log('Rendering data:', billData);
+
   return (
     <>
       <Grid item xs={12}>
@@ -35,7 +77,7 @@ export default function TinvoiceConfirmation() {
           ref={contentRef}
         >
           <TableContainer>
-          <Box
+            <Box
               sx={{
                 padding: '8px',
                 border: '|1px dashed grey',
@@ -69,7 +111,7 @@ export default function TinvoiceConfirmation() {
                                   <br />
                                   TRANSITO Y TRANSPORTE
                                   <br />
-                                  MANIZALES
+                                  {billData[0].CIUDAD}
                                 </Typography>
                               </td>
                             </tr>
@@ -91,8 +133,9 @@ export default function TinvoiceConfirmation() {
                     REF: Confirmación Factura <br /> <br /> Apreciados señores:{' '}
                     <br /> <br />
                     Cordialmente nos permitimos confirmar nuestra factura número
-                    5891015543 de fecha 6 de Abril de 2024 vendida a ALBERT
-                    JHOANY TREJOS VELARDE con las siguientes características:
+                    {' '}{ billData[0].NRO_PAGARE} de fecha {billData[0].FECHA_PAGARE}{' '}
+                    vendida a ALBERT JHOANY TREJOS VELARDE con las siguientes
+                    características:
                   </td>
                 </tr>
                 <tr>
@@ -109,25 +152,24 @@ export default function TinvoiceConfirmation() {
                           >
                             <b>
                               {' '}
-                              PROPIETARIO:
+                              MARCA: {billData[0].MARCA}
                               <br />
-                              MARCA:
+                              MODELO: {billData[0].CLASE}
                               <br />
-                              MODELO:
+                              MODELO: {billData[0].AMODELO}
                               <br />
-                              TIPO:
+                              TIPO: {billData[0].LINEA}
                               <br />
-                              COLOR:
+                              COLOR: {billData[0].COLOR}
                               <br />
-                              MOTOR No:
+                              MOTOR No: {billData[0].MOTOR}
                               <br />
-                              CHASIS No:
+                              CHASIS No: {billData[0].CHASIS}
                               <br />
-                              FACTURA No:
+                              PROPIETARIO: {billData[0].CL_NOMBRE}
                               <br />
-                              CERTIE INDIVIDUAL:
+                              PCC. o NIT: {billData[0].CL_NROID}
                               <br />
-                              CERTIFICADO DE EMISIÓN DE GASES: <br />
                             </b>
                           </td>
                         </tr>
@@ -139,7 +181,8 @@ export default function TinvoiceConfirmation() {
                   <td style={{ paddingLeft: '15px' }}>
                     <Typography fontWeight="bold" fontSize="10px">
                       Cordialmente, <br /> <br />
-                      CLAUDIA MARIA SALAZAR CASTAÑO <br />
+                      PROPIETARIO: {billData[0].GERENTE}
+                      <br /> <br />
                       Gerente
                     </Typography>
                   </td>
@@ -154,8 +197,12 @@ export default function TinvoiceConfirmation() {
       </Grid>
       <Grid item xs={12}>
         <CardActions>
-          <Button size="small" onClick={handlePrint} sx={{border: '1px solid blue'}}>
-            IMPRIMIR 
+          <Button
+            size="small"
+            onClick={handlePrint}
+            sx={{ border: '1px solid blue' }}
+          >
+            IMPRIMIR
           </Button>
         </CardActions>
       </Grid>
