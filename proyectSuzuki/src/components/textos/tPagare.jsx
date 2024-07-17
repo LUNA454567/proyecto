@@ -15,6 +15,10 @@ import { fetchBillByNumber } from '../../services/apiService';
 // import { obtenerUltimoValorDia } from '../../services/apiService';
 //se añade
 import { useParams } from 'react-router-dom';
+//para convertir  los numeros a texto
+
+import axios from 'axios';
+import { toWords } from 'number-to-words';
 
 export default function TPagareFinaval() {
   const { id } = useParams();
@@ -25,6 +29,10 @@ export default function TPagareFinaval() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const searchTerm = 'searchTerm';
+
+  //para convertir  los numeros a texto
+  const [numbers, setNumbers] = useState([]);
+  const [numberWords, setNumberWords] = useState('');
 
   const handlePrint = useReactToPrint({
     content: () => contentRef.current,
@@ -38,12 +46,23 @@ export default function TPagareFinaval() {
         console.log('aquiiiiiiiiii:', id, dataResponse);
         //se añade
         setBillData(dataResponse.warehouse_GetBillByNumber_R);
+
+        // Convertir el valor del pagaré a texto
+        const valueInWords = toWords(
+          dataResponse.warehouse_GetBillByNumber_R[0].VLR_PAGARE,
+          { lang: 'es' } // Asegúrate de especificar el idioma como español
+
+          
+        );
+        setNumberWords(valueInWords);
       } catch (error) {
         console.log('Error fetching data:', error);
         setError(error);
       } finally {
         setLoading(false);
       }
+
+      
     };
     getBillData();
   }, [id]);
@@ -61,6 +80,19 @@ export default function TPagareFinaval() {
   console.log('Data available:', billData);
 
   console.log('Rendering data:', billData);
+
+  //para poner de numero a letras
+  axios
+    .get(
+      'http://192.168.6.100:10010/web/services/warehouse/numberBill/?pagare=${id}'
+    )
+    .then((response) => {
+      setNumbers(response.data);
+      const wordsArray = response.data.map((number) => toWords(number));
+      setNumberWords(wordsArray);
+    })
+    .catch((error) => console.error('Error fetching data: ', error));
+
   return (
     <>
       <Grid item xs={12}>
@@ -125,14 +157,14 @@ export default function TPagareFinaval() {
                       SUZUKI MOTOR DE COLOMBIA S.A.
                     </b>{' '}
                     Sociedad con domicilio principal en Pereira – Risaralda, o a
-                    su orden en sus oficinas de {billData[0].CIUDAD} la suma de
-                    UN MILLON SETECIENTOS CINCO MIL DOSCIENTOS CINCUENTA Y
-                    CUATRO PESOS MCTE.. - {billData[0].VLR_PAGARE} mcte. En un
-                    plazo de TRES - {billData[0].PLAZO} meses y por TRES{' '}
-                    {billData[0].PLAZO} cuotas mensuales, iguales y sucesivas
-                    que incluyen capital, seguro colectivo de deudores e
-                    intereses remuneratorios, por el valor de QUINIENTOS SESENTA
-                    Y OCHO MIL CUATROCIENTOS DIECIOCHO PESOS MCTE.
+                    su orden en sus oficinas de {billData[0].CIUDAD} la suma de{' '}
+                    {numberWords.toUpperCase()} PESOS MCTE.. - ($
+                    {billData[0].VLR_PAGARE}) mcte. En un plazo de TRES -{' '}
+                    {billData[0].PLAZO} meses y por TRES {billData[0].PLAZO}{' '}
+                    cuotas mensuales, iguales y sucesivas que incluyen capital,
+                    seguro colectivo de deudores e intereses remuneratorios, por
+                    el valor de QUINIENTOS SESENTA Y OCHO MIL CUATROCIENTOS
+                    DIECIOCHO PESOS MCTE.
                     {billData[0].PLAZO} moneda legal colombiana cada una, la
                     primera cuota será exigible el día {billData[0].FVTO_CTA1},
                     y así sucesivamente el día SEIS {billData[0].FVTO_CTA1} de

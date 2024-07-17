@@ -4,10 +4,13 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import OkCancelButton from '../buttons/buttonOkCan';
 
+import { Link } from 'react-router-dom';
+import Button from '@mui/material/Button';
+
 // import OkCancelButton from '../buttons/buttonOkCan';
 import { useState } from 'react';
 
-export default function FormPropsTextFieldsPladgeGeneration({handleCancel}) {
+export default function FormPropsTextFieldsPladgeGeneration({ handleCancel }) {
   //NAME OF THE LEGAL REPRESENTATIVE
   const [nameLegalRepresentative, setNameLegalRepresentative] = useState('');
 
@@ -32,13 +35,12 @@ export default function FormPropsTextFieldsPladgeGeneration({handleCancel}) {
     setCityExpedition(value);
   };
 
-  // buttons ok cancel 
+  // buttons ok cancel
   const [message, setMessage] = useState('');
 
   const handleAccept = () => {
     setMessage('Accepted');
   };
-
 
   return (
     <Box
@@ -107,10 +109,39 @@ export default function FormPropsTextFieldsPladgeGeneration({handleCancel}) {
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             {' '}
             {/* Centers the buttons */}
-            <OkCancelButton
-              onAccept={handleAccept}
-              onCancel={handleCancel}
-            />
+            <OkCancelButton onAccept={handleAccept} onCancel={handleCancel} />
+            <Button
+              type="submit"
+              variant="outlined"
+              disabled={
+                nameLegalRepresentative === '' ||
+                idNumber === '' ||
+                cityExpedition === ''
+              }
+              sx={{
+                mb: 2,
+                bgcolor: 'green',
+                color: 'white',
+                alignItems: 'center',
+                marginTop: '0px',
+                marginLeft: '80px',
+                width: '100px',
+                height: '40px',
+                fontSize: '12px',
+                textAlign: 'center',
+                '&:hover': {
+                  bgcolor: 'green', // Mantiene el mismo color de fondo cuando se pasa el mouse
+                  color: 'white', // Mantiene el mismo color de texto cuando se pasa el mouse
+                },
+              }}
+            >
+              <Link
+                to="/viewReplaceFormCreditStatement"
+                style={{ color: 'white' }}
+              >
+                ACEPTAR
+              </Link>
+            </Button>
           </div>
         </Grid>
       </div>

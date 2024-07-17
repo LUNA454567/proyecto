@@ -52,7 +52,7 @@ export default function FormatGenerationDocuments() {
         <Card sx={{ padding: '2px' }} elevation={1}>
   <CardContent>
     <Typography>
-      {'GENERACIONnn DE FORMATOS (PAGARE - PRENDA - CONTRATO DE COMPRAVENTA - CONFIRMACION DE FACTURA - ACTA DE ENTREGA)'}
+      {'GENERACION DE FORMATOS (PAGARE - PRENDA - CONTRATO DE COMPRAVENTA - CONFIRMACION DE FACTURA - ACTA DE ENTREGA)'}
     </Typography>
   </CardContent>
   <Divider />

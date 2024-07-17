@@ -5,6 +5,8 @@ import Grid from '@mui/material/Grid';
 import OkCancelButton from '../buttons/buttonOkCan';
 import { useState } from 'react';
 import Card from '@mui/joy/Card';
+import { Link } from 'react-router-dom';
+import Button from '@mui/material/Button';
 
 export default function FormPropsTextFieldsPladgeGeneration({ handleCancel }) {
   // NAME OF THE LEGAL REPRESENTATIVE
@@ -71,7 +73,7 @@ export default function FormPropsTextFieldsPladgeGeneration({ handleCancel }) {
               value={nameLegalRepresentative}
               onChange={handleNameLegalRepresentativeConsChange}
               name="nameLegalRepresentative"
-              label="Nombre del Representante Legal:"
+              label="Nombre del Representante Legaaal:"
               size="sm"
               variant="standard" // Add a border to the TextField
               sx={{ mb: 2 }} // Add bottom margin
@@ -124,6 +126,39 @@ export default function FormPropsTextFieldsPladgeGeneration({ handleCancel }) {
                   onAccept={handleAccept}
                   onCancel={handleCancel}
                 />
+                <Button
+              type="submit"
+              variant="outlined"
+              disabled={
+                nameLegalRepresentative === '' ||
+                idNumber === '' ||
+                cityExpedition === '' 
+                
+              }
+              sx={{
+                mb: 2,
+                bgcolor: 'green',
+                color: 'white',
+                alignItems: 'center',
+                marginTop: '0px',
+                marginLeft: '80px',
+                width: '100px',
+                height: '40px',
+                fontSize: '12px',
+                textAlign: 'center',
+                '&:hover': {
+                  bgcolor: 'green', // Mantiene el mismo color de fondo cuando se pasa el mouse
+                  color: 'white', // Mantiene el mismo color de texto cuando se pasa el mouse
+                },
+              }}
+            >
+              <Link
+                to="/viewReplaceFormPladgeWithoutCreditorTenure"
+                style={{ color: 'white' }}
+              >
+                ACEPTAR
+              </Link>
+            </Button>
               </div>
             </Grid>
           </div>

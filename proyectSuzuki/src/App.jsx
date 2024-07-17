@@ -9,22 +9,27 @@ import viewGenerationCredits from './views/viewGenerationCredits';
 import viewReplaceFormConstanceUpToday from './views/viewReplaceFormConstanceUpToday';
 import viewReplaceFormCreditStatement from './views/viewReplaceFormCreditStatement';
 import viewReplaceFormChangeDate from './views/viewReplaceFormChangeDate';
+import CenteredBox from './views/viewGenerationCredits'
 import viewReplaceFormConstanceFinaval from './views/viewReplaceFormConstanceFinaval';
+// import viewReplaceFormPladgeWithoutCreditorTenure from './views/viewReplaceFormPladgeWithoutCreditorTenure';
 
 // import DownloadButton from './components/buttons/downloadButton';
 import PrintButton from './components/buttons/downloadButton';
 import TPagareFinaval from './components/textos/tPagareFinaval';
 import { ContextProvider } from './context/context';
- 
+
 export const App = () => {
   return (
     <>
       <ContextProvider>
         <Routes>
           {/* RUTAS SIN PROTECCIÓN */}
-          <Route path="/" element={<FormatGenerationCredits />}></Route>
+          <Route path="/viewGenerationCredits" Component={CenteredBox }></Route>
           {/* se debe añadir el id para que funcione y lo tenga anclado */}
-          <Route path="/viewGenerateFormats/:id" Component={viewGenerateFormats} />
+          <Route
+            path="viewGenerationCredits/viewGenerateFormats/:id"
+            Component={viewGenerateFormats}
+          />
           <Route
             path="/viewGenerationCredits"
             Component={viewGenerationCredits}
@@ -45,6 +50,10 @@ export const App = () => {
             path="/viewReplaceFormConstanceFinaval"
             Component={viewReplaceFormConstanceFinaval}
           />
+          {/* <Route
+            path="viewReplaceFormPladgeWithoutCreditorTenure"
+            Component={viewReplaceFormPladgeWithoutCreditorTenure}
+          /> */}
           <Route path="/DownloadButton" Component={PrintButton} />
           <Route path="/tPagareFinaval" Component={TPagareFinaval} />
         </Routes>
