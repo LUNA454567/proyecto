@@ -43,7 +43,7 @@ export default function TPagareFinaval() {
     const getBillData = async () => {
       try {
         const dataResponse = await fetchBillByNumber(id);
-        console.log('aquiiiiiiiiii:', id, dataResponse);
+        console.log('aquiiiiiiiiii MAURO ES GAY :', id, dataResponse);
         //se añade
         setBillData(dataResponse.warehouse_GetBillByNumber_R);
 
@@ -51,8 +51,6 @@ export default function TPagareFinaval() {
         const valueInWords = toWords(
           dataResponse.warehouse_GetBillByNumber_R[0].VLR_PAGARE,
           { lang: 'es' } // Asegúrate de especificar el idioma como español
-
-          
         );
         setNumberWords(valueInWords);
       } catch (error) {
@@ -61,8 +59,6 @@ export default function TPagareFinaval() {
       } finally {
         setLoading(false);
       }
-
-      
     };
     getBillData();
   }, [id]);
