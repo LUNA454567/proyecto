@@ -43,7 +43,7 @@ export default function TPagareFinaval() {
     const getBillData = async () => {
       try {
         const dataResponse = await fetchBillByNumber(id);
-        console.log('aquiiiiiiiiii MAURO ES GAY :', id, dataResponse);
+        console.log('aquiiiiiiiiii MAURO ES GAYY :', id, dataResponse);
         //se añade
         setBillData(dataResponse.warehouse_GetBillByNumber_R);
 
