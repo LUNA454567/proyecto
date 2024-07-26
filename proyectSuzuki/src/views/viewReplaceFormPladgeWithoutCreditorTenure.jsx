@@ -31,12 +31,6 @@ export default function ReplaceFormPladgeWithoutCreditorTenure() {
   return (
     <>
       <Grid container spacing={0}>
-        {/* NAVBAR */}
-        <Grid item xs={12}>
-          <Box component="section" sx={{ p: 0, border: '0px dashed grey' }}>
-            <NavigationBar />
-          </Box>
-        </Grid>
         {/* HEADER INFO */}
         <Grid item xs={12}>
           <Box sx={{ margin: '1px', padding: 0.1, border: '0px dashed grey' }}>

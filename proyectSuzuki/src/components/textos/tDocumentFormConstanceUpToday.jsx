@@ -41,7 +41,7 @@ export default function TreplaceFormConstanceUpToday() {
           <TableContainer>
             <Box style={{ textAlign: 'center', fontSize: '13px' }}>
               <h2>
-                <b> CONSTANCIA AL DIA </b>
+                <b> CONSTANCIA AL DIAx </b>
               </h2>
             </Box>
             <Table aria-label="basic table">

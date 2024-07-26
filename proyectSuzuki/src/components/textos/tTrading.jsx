@@ -14,6 +14,94 @@ import { Typography } from '@mui/material';
 //se añade
 import { useParams } from 'react-router-dom';
 import { fetchBillByNumber } from '../../services/apiService';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+
+function numeroATexto(num) {
+  const unidades = [
+    '',
+    'UNO',
+    'DOS',
+    'TRES',
+    'CUATRO',
+    'CINCO',
+    'SEIS',
+    'SIETE',
+    'OCHO',
+    'NUEVE',
+  ];
+  const decenas = [
+    '',
+    'DIEZ',
+    'VEINTE',
+    'TREINTA',
+    'CUARENTA',
+    'CINCUENTA',
+    'SESENTA',
+    'SETENTA',
+    'OCHENTA',
+    'NOVENTA',
+  ];
+  const especiales = [
+    'DIEZ',
+    'ONCE',
+    'DOCE',
+    'TRECE',
+    'CATORCE',
+    'QUINCE',
+    'DIECISEIS',
+    'DIECISIETE',
+    'DIECIOCHO',
+    'DIECINUEVE',
+  ];
+  const centenas = [
+    '',
+    'CIEN',
+    'DOCIENTOS',
+    'TRESCIENTOS',
+    'CUATROCIENTOS',
+    'QUINIENTOS',
+    'SEISCIENTOS',
+    'SETECIENTOS',
+    'OCHOCIENTOS',
+    'NOVECIENTOS',
+  ];
+
+  if (num === 0) return 'CERO';
+  if (num < 10) return unidades[num];
+  if (num < 20) return especiales[num - 10];
+  if (num < 100)
+    return (
+      decenas[Math.floor(num / 10)] +
+      (num % 10 !== 0 ? ' Y ' + unidades[num % 10] : '')
+    );
+  if (num < 1000) {
+    return (
+      (num === 100 ? 'CIEN' : centenas[Math.floor(num / 100)]) +
+      (num % 100 !== 0 ? ' ' + numeroATexto(num % 100) : '')
+    );
+  }
+
+  if (num < 1000000) {
+    return (
+      (Math.floor(num / 1000) === 1
+        ? 'MIL'
+        : numeroATexto(Math.floor(num / 1000)) + ' MIL') +
+      (num % 1000 !== 0 ? ' ' + numeroATexto(num % 1000) : '')
+    );
+  }
+
+  if (num < 1000000000) {
+    return (
+      (Math.floor(num / 1000000) === 1
+        ? 'UN MILLÓN'
+        : numeroATexto(Math.floor(num / 1000000)) + ' MILLONES') +
+      (num % 1000000 !== 0 ? ' ' + numeroATexto(num % 1000000) : '')
+    );
+  }
+
+  return 'NÚMERO FUERA DE RANGO';
+}
 
 
 export default function Ttrading() {
@@ -90,7 +178,7 @@ export default function Ttrading() {
                       width: '100%',
                       paddingLeft: '15px',
                       textAlign: 'justify',
-                       fontSize: '10px'
+                      fontSize: '10px',
                     }}
                   >
                     En todos los contratos de adquisición de bienes muebles y
@@ -147,11 +235,10 @@ export default function Ttrading() {
                       paddingLeft: '15px',
                       fontSize: '10px',
                       textAlign: 'center',
-                     
                     }}
                   >
-                    Este documeto hace parte integral de la factura de venta
-                    N°. {billData[0].NRO_PAGARE}
+                    Este documeto hace parte integral de la factura de venta N°.{' '}
+                    {billData[0].NRO_PAGARE}
                   </td>
                 </tr>
                 <tr style={{ border: '3px dashed red' }}>
@@ -160,7 +247,7 @@ export default function Ttrading() {
                       width: '90px',
                       // border: '3px dashed purple',
                       textAlign: 'center',
-                     fontSize: '10px'
+                      fontSize: '10px',
                     }}
                   >
                     <div style={{ padding: '8px', display: 'inline-block' }}>
@@ -194,8 +281,8 @@ export default function Ttrading() {
                         }}
                       >
                         <b>
-                          _____________________________ <br />ACEPTADA <br />
-                        
+                          _____________________________ <br />
+                          ACEPTADA <br />
                         </b>
                       </div>
                     </div>
@@ -211,8 +298,12 @@ export default function Ttrading() {
       </Grid>
       <Grid item xs={12}>
         <CardActions>
-          <Button size="small" onClick={handlePrint3} sx={{border: '1px solid blue'}}>
-            IMPRIMIR 
+          <Button
+            size="small"
+            onClick={handlePrint3}
+            sx={{ border: '1px solid blue' }}
+          >
+            IMPRIMIR
           </Button>
         </CardActions>
       </Grid>

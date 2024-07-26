@@ -134,7 +134,7 @@ export default function TinvoiceConfirmation() {
                     <br /> <br />
                     Cordialmente nos permitimos confirmar nuestra factura número
                     {' '}{ billData[0].NRO_PAGARE} de fecha {billData[0].FECHA_PAGARE}{' '}
-                    vendida a ALBERT JHOANY TREJOS VELARDE con las siguientes
+                    vendida a {billData[0].CL_NOMBRE} con las siguientes
                     características:
                   </td>
                 </tr>
@@ -180,9 +180,9 @@ export default function TinvoiceConfirmation() {
                 <tr>
                   <td style={{ paddingLeft: '15px' }}>
                     <Typography fontWeight="bold" fontSize="10px">
-                      Cordialmente, <br /> <br />
-                      PROPIETARIO: {billData[0].GERENTE}
-                      <br /> <br />
+                      Cordialmente, <br /> <br /> <br/> 
+                      {billData[0].GERENTE}
+                      <br /> 
                       Gerente
                     </Typography>
                   </td>

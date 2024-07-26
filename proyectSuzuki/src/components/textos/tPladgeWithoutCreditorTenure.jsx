@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useRef, useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/joy/Grid';
 import '../style/printStyles.css'; // Asegúrate de importar el archivo CSS aquí
@@ -11,12 +11,21 @@ import CardActions from '@mui/material/CardActions';
 import { useReactToPrint } from 'react-to-print';
 import Button from '@mui/material/Button';
 import { Context } from '../../context/context.jsx';
-import Tab from '@mui/material/Tab';
 import { Link } from 'react-router-dom';
+import { fetchBillByNumber } from '../../services/apiService';
+import { useParams } from 'react-router-dom';
 
-export default function TreplacePladgeWithoutCreditorTenure(id) {
+export default function TreplacePladgeWithoutCreditorTenure() {
+  const { id } = useParams();
+  console.log(id, 'idddd');
+
   const contentRef = useRef(); // Crear el ref
   const [borderAxis] = React.useState('xBetween');
+  const [billData, setBillData] = useState(null);
+  console.log(billData, 'aquii dataaaaaaaa');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const searchTerm = 'searchTerm';
 
   const { nameLegalRepresentative, idNumber, cityExpedition } =
     useContext(Context);
@@ -25,11 +34,49 @@ export default function TreplacePladgeWithoutCreditorTenure(id) {
     content: () => contentRef.current,
   });
 
+  useEffect(() => {
+    console.log('useEffect triggered witg searchTerm', searchTerm);
+    const getBillData = async () => {
+      try {
+        const dataResponse = await fetchBillByNumber(id);
+        console.log('aquiiiiiiiiii:', id, dataResponse);
+        //se añade
+        setBillData(dataResponse.warehouse_GetBillByNumber_R);
+      } catch (error) {
+        console.log('Error fetching data:', error);
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getBillData();
+  }, [id]);
 
+  if (loading) {
+    console.log('Loading data...');
+    return <p>Loading...</p>;
+  }
+
+  // if (billData) {
+  //   console.log('No data available');
+  //   return <p>No data available hola</p>;
+  // }
+
+  // console.log('Data available:', billData);
 
   return (
     <>
       <Grid item xs={12}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          {/* <Button
+            variant="text"
+            color="primary"
+            component={Link}
+            to="/viewGenerationCredits/viewGenerateFormats/5891015543"
+          >
+            VOLVER{' '}
+          </Button> */}
+        </Box>
         <Box
           style={{
             margin: '1px',
@@ -40,19 +87,20 @@ export default function TreplacePladgeWithoutCreditorTenure(id) {
           // className="scrollable-container"
           ref={contentRef}
         >
-          <Box textAlign="center">
-            <Button
-              variant="contained"
-              color="primary"
-              component={Link}
-              to="/viewGenerationCredits/viewGenerateFormats/5891015543"
+          <TableContainer
+            style={{
+              textAlign: 'center',
+              fontSize: '15px',
+              border: '2px solid red',
+            }}
+          >
+            <Box
+              style={{
+                textAlign: 'center',
+                fontSize: '15px',
+                border: '2px solid red',
+              }}
             >
-              Ir a la Ruta
-            </Button>
-          </Box>
-          
-          <TableContainer>
-            <Box style={{ textAlign: 'center', fontSize: '15px' }}>
               <h2>
                 <b> PRENDA SIN TENENCIA DEL ACREEDOR </b>
               </h2>
@@ -69,33 +117,35 @@ export default function TreplacePladgeWithoutCreditorTenure(id) {
                       fontSize: '10px',
                     }}
                   >
-                    Entre los suscritos a saber ALBERT JHOANY TREJOS VELARDE,
-                    mayor de edad, domiciliado en PALESTINA en CALLE 8 A N 1-24
-                    RENAN BARCO LOPEZ, identificado con la cédula de ciudadanía
-                    No. 9847172 expedida en PALESTINA , obrando en su propio
-                    nombre e interés, de una parte, quien en adelante se
-                    denominará EL DEUDOR y de la otra, {nameLegalRepresentative}{' '}
-                    , mayor de edad, domiciliado en MANIZALES en Cra. 22
-                    No.15-45, identificado con la cédula de ciudadanía No.
-                    {idNumber} expedida en {cityExpedition}, obrando en nombre y
-                    representación en calidad de REPRESENTANTE LEGAL de SUZUKI
-                    MOTOR DE COLOMBIA S.A. con NIT 891.410.137-2, entidad
-                    domiciliada en Pereira y en este caso sucursal MANIZALES,
-                    todo lo cual acredita con el Certificado expedido por la
-                    Cámara de Comercio, que presenta y hace parte integral del
-                    presente documento, quien en adelante se denominará EL
-                    ACREEDOR, se ha celebrado un Contrato de Prenda Comercial
-                    Abierta de Primer Grado sin tenencia de EL ACREEDOR,
-                    contenido en las siguientes cláusulas : PRIMERA: EL DEUDOR
-                    constituye a favor de EL ACREEDOR, derecho de Prenda Abierta
-                    sin Tenencia para garantizar al ACREEDOR, el cumplimiento de
-                    obligaciones de crédito hasta por la suma de UN MILLON
-                    SETECIENTOS CINCO MIL DOSCIENTOS CINCUENTA Y CUATRO PESOS
-                    MCTE. ($1.705.254) MCTE. SEGUNDA : La Prenda Abierta sin
-                    Tenencia que por este documento se constituye por parte de
-                    EL DEUDOR a favor de EL ACREEDOR, conforme a los Art. 1207 y
-                    s,s, del código de comercio, recae sobre un automotor
-                    (Motocicleta) de su exclusiva propiedad, el cual se
+                    Entre los suscritos a saber {billData[0].CL_NOMBRE}, mayor
+                    de edad, domiciliado en {billData[0].CL_CIUEXP} en{' '}
+                    {billData[0].CL_DIRECCION}, identificado con la cédula de
+                    ciudadanía No. {billData[0].CL_NROID} expedida en{' '}
+                    {billData[0].CL_CIUEXP} , obrando en su propio nombre e
+                    interés, de una parte, quien en adelante se denominará EL
+                    DEUDOR y de la otra, {nameLegalRepresentative}, mayor de edad, domiciliado
+                    en {billData[0].CIUDAD} en {billData[0].DIR_ALMACEN},
+                    identificado con la cédula de ciudadanía No.{idNumber} expedida en
+                    {cityExpedition}, obrando en nombre y representación en calidad de
+                    REPRESENTANTE LEGAL de SUZUKI MOTOR DE COLOMBIA S.A. con NIT
+                    891.410.137-2, entidad domiciliada en Pereira y en este caso
+                    sucursal{' '}
+                    {billData[0].CIUDAD}, todo lo cual acredita con el
+                    Certificado expedido por la Cámara de Comercio, que presenta
+                    y hace parte integral del presente documento, quien en
+                    adelante se denominará EL ACREEDOR, se ha celebrado un
+                    Contrato de Prenda Comercial Abierta de Primer Grado sin
+                    tenencia de EL ACREEDOR, contenido en las siguientes
+                    cláusulas : PRIMERA: EL DEUDOR constituye a favor de EL
+                    ACREEDOR, derecho de Prenda Abierta sin Tenencia para
+                    garantizar al ACREEDOR, el cumplimiento de obligaciones de
+                    crédito hasta por la suma de UN MILLON SETECIENTOS CINCO MIL
+                    DOSCIENTOS CINCUENTA Y CUATRO PESOS MCTE. ($
+                    {billData[0].VLR_PAGARE}) MCTE. SEGUNDA : La Prenda Abierta
+                    sin Tenencia que por este documento se constituye por parte
+                    de EL DEUDOR a favor de EL ACREEDOR, conforme a los Art.
+                    1207 y s,s, del código de comercio, recae sobre un automotor
+                    ({billData[0].CLASE}) de su exclusiva propiedad, el cual se
                     especifica y detalla a continuación:
                   </TableCell>
                 </tr>
@@ -108,36 +158,32 @@ export default function TreplacePladgeWithoutCreditorTenure(id) {
                   >
                     <tbody>
                       <tr style={{ textAlign: 'center ', fontSize: '10px' }}>
-                        <td>
-                          <b>CLASE:</b>
-                        </td>
-                        <td>variable</td>
-                        <td>CHASIS N°:</td>
-                        <td>variable</td>
+                        <td>CERTIFICADO INDIVIDUAL:</td>
+                        <td>{billData[0].CERT_INDIVIDUAL}</td>
+                        <td>MODELO:</td>
+                        <td>{billData[0].AMODELO}</td>
                       </tr>
                       <tr style={{ textAlign: 'center ', fontSize: '10px' }}>
                         <td>MARCA:</td>
-                        <td>variable</td>
-                        <td>MOTOR N°:</td>
-                        <td>variable</td>
+                        <td>{billData[0].MARCA}</td>
+                        <td>CLASE:</td>
+                        <td>{billData[0].CLASE}</td>
                       </tr>
                       <tr style={{ textAlign: 'center ', fontSize: '10px' }}>
-                        <td>MODELO:</td>
-                        <td>variable</td>
                         <td>COLOR:</td>
-                        <td>variable</td>
+                        <td>{billData[0].COLOR}</td>
+                        <td>N°. CHASIS:</td>
+                        <td>{billData[0].CHASIS}</td>
                       </tr>
                       <tr style={{ textAlign: 'center ', fontSize: '10px' }}>
-                        <td>TIPO:</td>
-                        <td>variable</td>
-                        <td>PLACAS N°</td>
-                        <td>variable</td>
+                        <td>N°. MOTOR:</td>
+                        <td>{billData[0].MOTOR} CC</td>
+                        <td>LINEA:</td>
+                        <td>{billData[0].LINEA}</td>
                       </tr>
                       <tr style={{ textAlign: 'center ', fontSize: '10px' }}>
-                        <td>CILINDRADA:</td>
-                        <td>variable</td>
-                        <td>CERTIFICADO INDIVIDUAL:</td>
-                        <td>variable</td>
+                        <td>PLACA N°:</td>
+                        <td>{billData[0].PLACA} CC</td>
                       </tr>
                     </tbody>
                   </Table>
@@ -150,22 +196,137 @@ export default function TreplacePladgeWithoutCreditorTenure(id) {
                       fontSize: '10px',
                     }}
                   >
-                    <b>SEGUNDA</b> : El precio total de esta venta es la suma de
-                    SIETE MILLONES CIENTO VEINTISIETE MIL CINCUENTA Y CUATRO
-                    PESOS MCTE. ($7.127.054) moneda legal, que el
-                    <b> COMPRADOR</b> pagará a la <b> VENDEDORA</b> o a su orden
-                    en la ciudad de MANIZALES así: a) la suma de CINCO MILLONES
-                    CUATROCIENTOS VEINTIUNO MIL OCHOCIENTOS PESOS MCTE.
-                    ($5.421.800) moneda legal, valor de cuota inicial que la
-                    <b> VENDEDORA</b> declara recibida a satisfacción de manos
-                    del comprador. b)la suma de UN MILLON SETECIENTOS CINCO MIL
-                    DOSCIENTOS CINCUENTA Y CUATRO PESOS MCTE. ($1.705.254)
-                    moneda legal, valor del saldo del precio del vehículo que el{' '}
-                    <b>COMPRADOR</b> pagará a la <b> VENDEDORA</b> en TRES (3)
-                    cuotas mensuales iguales y sucesivas cada una de QUINIENTOS
-                    SESENTA Y OCHO MIL CUATROCIENTOS DIECIOCHO PESOS MCTE.
-                    ($568.418) moneda legal, la primera de ellas el día 6 de
-                    Mayo de 2024 y CERO (0) cuota(s) extra(s) pagadera(s) así:
+                    TERCERA: Sobre el indicado automotor, EL DEUDOR conserva la
+                    tenencia del vehículo a nombre del ACREEDOR en calidad de
+                    prenda. CUARTA: El gravamen de Prenda mencionada garantiza
+                    al ACREEDOR todas las obligaciones que por cualquier causa
+                    tuviere y llegare a contraer EL DEUDOR para con EL ACREEDOR,
+                    cuyas fechas de vencimiento sean posteriores al día 6 de
+                    Abril de 2024, pero advirtiendo que la caución prendaria se
+                    extiende no solamente a la suma debida, sino también a los
+                    intereses de la obligación u obligaciones contraídos, los
+                    cuales quedarán garantizados igualmente por la prenda.
+                    QUINTA: Los créditos respectivos pueden constar en cualquier
+                    clase de títulos valores en los que firme EL DEUDOR como
+                    girador, aceptante, endosante, suscriptor u ordenante,
+                    directa o indirectamente, individual o conjuntamente, con
+                    otras firmas o en cualquier otro documento proveniente del
+                    DEUDOR a favor de EL ACREEDOR. SEXTA: Para los efectos
+                    legales correspondientes se toma como fecha de vencimiento
+                    de la obligación asegurada por medio de la prenda aquí
+                    constituida, el día de su vencimiento, esto es el{billData[0].FVTO_PAG}. Sin perjuicio de lo anterior,la obligación global
+                    se vencerá anticipadamente cuando quiera que se presente las
+                    siguientes eventualidades:A.- Por el simple retraso en el
+                    pago de uno o más instalamentos por pagar del título valor o
+                    documento otorgado por EL DEUDOR a favor de EL ACREEDOR. En
+                    este caso, bastará EL ACREEDOR presentar ante el respectivo
+                    Juez, este documento de prenda y otros títulos valores o
+                    documentos en que consten las deudas correspondientes. B.-
+                    Por no poner a disposición de EL ACREEDOR el vehículo dado
+                    en prenda dentro de las 24 horas siguientes a la
+                    comunicación fehaciente, dirigida a la residencia registrada
+                    ante EL ACREEDOR por EL DEUDOR, en la cual solicita la
+                    presentación del automotor pignorado para su inspección. Y
+                    C.- Por incumplimiento de cualquiera de las obligaciones
+                    contraídas en el presente contrato.<br></br> Todo lo anterior sin
+                    menoscabo de las acciones civiles y penales a que tenga
+                    derecho EL ACREEDOR. PARÁGRAFO: No obstante el vencimiento
+                    establecido para la obligación asegurada, la Prenda
+                    conservará su vigencia mientras existan obligaciones
+                    pendientes de pago, sean directas o indirectas a cargo de EL
+                    DEUDOR y a favor de EL ACREEDOR y mientras esta no cancele
+                    en forma expresa y escrita el gravamen prendario que por
+                    medio de este contrato se constituye. SÉPTIMA: Son
+                    obligaciones especiales de EL DEUDOR: a) Pagar la totalidad
+                    de los gastos originados con ocasión la prenda del vehículo
+                    y del cobro, así como los impuestos de timbre, papel sellado
+                    que cause el contrato, gastos de matrícula, licencia de
+                    circulación, placas, registro de la prenda, etc. B) Pagar la
+                    totalidad de las sumas que resulten de la imposición de
+                    multas y sanciones por infracciones de policía o de
+                    tránsito, indemnizaciones a terceros por daños ocasionados
+                    en el manejo del vehículo y en general, la totalidad de los
+                    gastos que en una u otra forma puedan derivarse del vehículo
+                    objeto de la prenda. C) Permitir al ACREEDOR el derecho de
+                    inspección sobre el estado del vehículo dado en prenda, para
+                    cuyo efecto presentará la motocicleta en el sitio que
+                    indique EL ACREEDOR, cada vez que este así lo requieran. D)
+                    Mantener en perfecto estado de funcionamiento ejecutando a
+                    su costa las revisiones periódicas y las reparaciones
+                    necesarias. E) Informar al ACREEDOR, cualquier cambio de
+                    domicilio o residencia dentro de los 10 días siguientes a la
+                    fecha en que se realice. F) EL DEUDOR está obligado a
+                    gestionar lo pertinente de este contrato ante la respectiva
+                    Oficina de Tránsito, debiendo entregar al ACREEDOR fotocopia
+                    de la Tarjeta de Propiedad en que obre la misma constancia y
+                    entregar el original del presente documento de prenda
+                    debidamente sellado por la Oficina de Tránsito respectiva.
+                    OCTAVA: En caso de mora de EL DEUDOR en el pago de
+                    cualquiera de las cuotas o de su interés, o si usare el
+                    vehículo a juicio de EL ACREEDOR en forma prejudicial o
+                    peligrosa a sus intereses, o si la motocicleta fuere
+                    perseguida judicialmente, por vía administrativa o por
+                    terceros, o si causaren daños a terceros con el vehículo, y
+                    en general si EL DEUDOR dejare de cumplir cualquiera de las
+                    obligaciones a su cargo derivadas del presente contrato,
+                    podrá EL ACREEDOR proceder a exigir el pago de la totalidad
+                    de los saldos pendientes, sin consideración a los plazos
+                    convenidos. De optar EL ACREEDOR por la facultad anterior,
+                    será obligación de EL DEUDOR restituir inmediatamente el
+                    vehículo, y en caso contrario, podrá EL ACREEDOR tomarlo en
+                    cualquier lugar que se encuentre bajo la responsabilidad y a
+                    costa del comprador, en tanto las autoridades judiciales
+                    resuelvan. NOVENA: No podrá EL DEUDOR oponerse en ningún
+                    caso a la toma del vehículo, en forma alguna, ni ejercitar
+                    retención sobre el mismo, ni alegar u oponerse por mejoras,
+                    reparaciones, adiciones, etc., ya que a éstas se extiende la
+                    prenda. Para los efectos anteriores podrá EL ACREEDOR obrar
+                    por si, o recurrir a las autoridades judiciales,
+                    administrativas o de circulación, para que mediante la
+                    simple presentación de este documento, y sin necesidad de
+                    acompañar otra prueba le presenten la 25/7/24, 12:13 p.m.
+                    1/2 protección para recuperar la tenencia del vehículo
+                    mencionado. DECIMA: Sin perjuicio de otras acciones civiles
+                    y penales podrá EL ACREEDOR tomar las medidas preventivas
+                    que considere necesarias para garantizar el pago de los
+                    perjuicios causados haciendo efectivo para ello los títulos
+                    valores o documentos aceptados por EL DEUDOR, hasta la
+                    concurrencia del valor de los créditos. Y en el evento de
+                    que el valor comercial del vehículo no cubra lo adeudado, EL
+                    ACREEDOR con el título valor (pagaré) podrá perseguir otros
+                    bienes hasta la cancelación total de las deudas. DECIMA
+                    PRIMERA: EL DEUDOR queda facultado para cancelar el total de
+                    la obligación u obligaciones en cualquier tiempo antes del
+                    vencimiento de la última cuota, mediante pago del saldo de
+                    la deuda y los intereses causados hasta la fecha de dicho
+                    pago. DECIMA SEGUNDA: El vehículo pignorado deberá
+                    permanecer dentro del territorio de la República de
+                    Colombia. Para salir del país se requiere autorización
+                    escrita y expresa del ACREEDOR. DECIMA TERCERA: Por el sólo
+                    hecho de iniciar EL ACREEDOR acción judicial, policiva o
+                    administrativa pagará EL DEUDOR a EL ACREEDOR una suma
+                    equivalente al (20%) del valor del préstamo por agencias en
+                    derecho, exigible con la sola iniciación de la respectiva
+                    actuación. DECIMA CUARTA: EL DEUDOR desde ahora acepta
+                    cualquier traspaso o cesión que EL ACREEDOR hiciere de los
+                    instrumentos a su cargo, así como de la prenda con todas las
+                    consecuencias que la ley señale. DECIMA QUINTA: El bien dado
+                    en prenda podrá ser enajenado por EL DEUDOR, pero solo se
+                    verificará la tradición de él adquiriente, cuando EL
+                    ACREEDOR lo autorice o esté cubierto en su totalidad el
+                    crédito, debiendo hacerse constar el respectivo hecho con el
+                    presente documento, en nota suscrita por EL ACREEDOR. En
+                    Caso de autorización de EL ACREEDOR los adquirientes están
+                    obligaos a respetar el contrato de prenda. DECIMA SEXTA: EL
+                    DEUDOR se compromete a mantener el vehículo dado en prenda
+                    en normal estado de funcionamiento y conservación. DECIMA
+                    SÉPTIMA: Acuérdese como lugar de cumplimiento de las
+                    obligaciones la ciudad de MANIZALES. Para efecto, sus
+                    obligaciones y responsabilidades son las mismas de un
+                    Depositario. AUTORIZACION: EL ACREEDOR PRENDARIO autoriza
+                    expresamente a SUZUKI MOTOR DE COLOMBIA S.A. para que esta
+                    prenda pueda ser registrada en comfecamaras y se obtenga
+                    certificado de la misma.
                   </TableCell>
                 </tr>
                 <tr>
@@ -176,89 +337,8 @@ export default function TreplacePladgeWithoutCreditorTenure(id) {
                       fontSize: '10px',
                     }}
                   >
-                    <b>TERCERA</b> : El otorgamiento aceptación de títulos
-                    valores en cumplimiento de este <b>CONTRATO</b> no
-                    constituye pago, novación ni dación en pago de este y los
-                    títulos valores otorgados o aceptados lo son bajo condición
-                    suspensiva del pago efectivo de ellos. <b>CUARTA</b>: La{' '}
-                    <b>VENDEDORA</b> se <b>RESERVA</b> el Levantamiento de la
-                    prenda sin tenencia del bien dado en venta y descrito
-                    determinado en la cláusula <b>PRIMERA</b> de este contrato,
-                    hasta el pago total del precio, los intereses corrientes y
-                    de mora si los hubiere, y los gastos y costas judiciales y
-                    extrajudiciales que eventualmente hiciere la{' '}
-                    <b>VENDEDORA</b> para obtener su pago. <b>QUINTA</b>: En tal
-                    virtud el <b>COMPRADOR</b> declara que: a) En el momento de
-                    la firma del presenteCONTRATO ya tiene recibido
-                    materialmente el bien dado en venta, en perfecto estado de
-                    servicio y mantenimiento y en el mismo estado se obliga a
-                    conservarlo a su costa. b) Reconoce su calidad de deudor con
-                    tenencia de la motocicleta hasta el cumplimiento total de
-                    las obligaciones generadas por el presente <b>CONTRATO</b>.
-                    c) Como deudor con tenencia de la motocicleta se obliga a
-                    responder de las infracciones a las leyes y reglamentos y
-                    por 5/6/24, 7:47 a.m. 1/2 los daños, perjuicios, lucro
-                    cesante e indemnización de cualquier índole que resultaren o
-                    tenga como causa el uso del vehículo mismo. d) Se obliga a
-                    permitir la inspección del vehículo por la Vendedora en
-                    cualquier momento. e) Se compromete a no trasladar el
-                    vehículo fuera de la República de Colombia. f) Se obliga a
-                    no vender, transformar, grabar, enajenar, modificar o
-                    alterar el vehículo o cambiarle su destinación. En caso de
-                    resolución del <b>CONTRATO</b>, elCOMPRADOR cede a la{' '}
-                    <b>VENDEDORA</b> gratuitamente las mejoras que hubiere
-                    realizado al bien y expresamente renuncia al derecho de
-                    retención sobre el mismo. g) Se compromete a notificar a la{' '}
-                    <b>VENDEDORA</b> cualquier cambio de domicilio residencia a
-                    más tardar dentro de los (10) diez días siguientes, así como
-                    toda medida preventiva o de ejecución que se intente contra
-                    el vehículo vendido tan pronto como tenga conocimiento de
-                    ello. h) Se obliga a pagar todos los gastos de titulación
-                    del bien incluyendo los impuestos, gravámenes y tasas que
-                    ello generara y los requeridos por las disposiciones del
-                    tránsito, como también los necesarios para mantener el
-                    vehículo en normal estado de servicio. i) Igualmente se
-                    obliga a presentar a la <b>VENDEDORA</b>, fotocopia de la
-                    tarjeta de propiedad del vehículo donde se encuentra
-                    registrada la prenda requerida para la entrega del vehículo.{' '}
-                    <b>SEXTA:</b> El incumplimiento de una cualquiera de las
-                    obligaciones consignadas en este contrato, parcial o
-                    totalmente por parte del <b>COMPRADOR</b>, faculta a la{' '}
-                    <b>VENDEDORA</b> para dar por vencido todos los plazos y
-                    exigir de hecho el pago de la totalidad de lo debido en
-                    forma inmediata, para lo cual bastará la sola afirmación que
-                    del incumplimiento haga la <b>VENDEDORA</b> para iniciar las
-                    acciones judiciales que considere pertinentes.{' '}
-                    <b>PARÁGRAFO:</b> La <b>VENDEDORA</b> en el evento anterior
-                    y a su juicio podrá pedir la resolución del <b>CONTRATO</b>{' '}
-                    o el cumplimiento de la obligación, pero en ambos casos el{' '}
-                    <b>COMPRADOR</b> se obliga a pagar a laVENDEDORA como{' '}
-                    <b>CLAUSULA PENAL</b> por el incumplimiento, una suma de
-                    dinero igual a la cuota inicial, más las ya pagadas. Así
-                    mismo se conviene que el pago de la <b>CLAUSULA PENAL</b> no
-                    extingue la obligación principal. SÉPTIMA: Las partes
-                    convienen que en lo pertinente las <b>CLAUSULAS</b> del
-                    PAGARE que antecede, se entiendan incorporadas al presente{' '}
-                    <b>CONTRATO</b> de <b>COMPRAVENTA</b>. <b>OCTAVA:</b> La{' '}
-                    <b>VENDEDORA</b> queda facultada para ceder el presente{' '}
-                    <b>CONTRATO</b> sin las notificaciones y formalidades que a
-                    favor de los obligados establece la Ley, puesto que estos
-                    renuncian expresamente a ello. NOVENA: Con el fin de
-                    garantizar el cumplimiento de la totalidad de las
-                    obligaciones contenidas y generadas por este <b>PAGARE</b> y
-                    el{' '}
-                    <b>
-                      CONTRATO DE COMPRAVENTA CON PRENDA SIN TENENCIA DEL
-                      ACREEDOR
-                    </b>{' '}
-                    anteriormente consignado firma (n) en la calidad de
-                    codeudor(es) el señor (a) - mayor(es) de edad, vecino(a)(s)
-                    de - respectivamente, identificado (a)(s) con la (s)
-                    cédula(s) de ciudadanía número (s) de - de ,respectivamente
-                    quien responderá en forma solidaria e indivisiblemente por
-                    las obligaciones aquí establecidas. En constancia se firma
-                    el presente documentos en MANIZALES el dia 6 de Abril de
-                    2024
+                    Para constancia se firma en MANIZALES, el día 6 de Abril de 2024.
+
                   </TableCell>
                 </tr>
                 <Box
@@ -271,21 +351,15 @@ export default function TreplacePladgeWithoutCreditorTenure(id) {
                   <Table style={{ marginRight: '2px' }}>
                     <tr>
                       <TableCell sx={{ padding: '8px', fontSize: '10px' }}>
-                        <span style={{ marginRight: '20px' }}>
-                          {' '}
-                          {/* Reducido el margen para adaptarse mejor */}
-                          _______________________________
-                        </span>
+                        
                         <br />
                         <span style={{ marginRight: '20px' }}>
                           {' '}
                           {/* Reducido el margen para adaptarse mejor */}
-                          LA VENDEDORA ACREEDORA
+                          ACREEDOR PRENDARIO 
                         </span>
                         <br />
                         SUZUKI MOTOR DE COLOMBIA S.A
-                        <br />
-                        REPRESENTANTE LEGAL
                         <br />
                       </TableCell>
                     </tr>
@@ -293,22 +367,37 @@ export default function TreplacePladgeWithoutCreditorTenure(id) {
                   <Table>
                     <tr>
                       <TableCell sx={{ padding: '8px', fontSize: '10px' }}>
+                        
                         <span style={{ marginRight: '20px' }}>
                           {' '}
                           {/* Reducido el margen para adaptarse mejor */}
-                          _______________________________
+                          DEUDOR PRENDARIO
+
                         </span>
                         <br />
                         <span style={{ marginRight: '20px' }}>
                           {' '}
                           {/* Reducido el margen para adaptarse mejor */}
-                          EL COMPRADOR DEUDOR
+                          NOMBRE:____________________________________
                         </span>
                         <br />
-                        ALBERT JHOANY TREJOS VELARDE
+                        <span style={{ marginRight: '20px' }}>
+                          {' '}
+                          {/* Reducido el margen para adaptarse mejor */}
+                          CEDULA:_____________________________________
+                        </span>
                         <br />
-                        C.C. No.9847172
+                        <span style={{ marginRight: '20px' }}>
+                          {' '}
+                          {/* Reducido el margen para adaptarse mejor */}
+                          DIRECCIÓN:__________________________________
+                        </span>
                         <br />
+                        <span style={{ marginRight: '20px' }}>
+                          {' '}
+                          {/* Reducido el margen para adaptarse mejor */}
+                          TEL:_________________________________________
+                        </span>
                       </TableCell>
                       <TableCell sx={{ padding: '8px', fontSize: '10px' }}>
                         <Box
@@ -334,99 +423,7 @@ export default function TreplacePladgeWithoutCreditorTenure(id) {
                   </Table>
                 </Box>
                 {/* segundo */}
-                <Box
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    // border: '1px dashed red',
-                    marginTop: '28px',
-                  }}
-                >
-                  <Table>
-                    <tr>
-                      <TableCell sx={{ padding: '8px', fontSize: '10px' }}>
-                        <span style={{ marginRight: '20px' }}>
-                          {' '}
-                          {/* Reducido el margen para adaptarse mejor */}
-                          _______________________________
-                        </span>
-                        <br />
-                        <span style={{ marginRight: '20px' }}>
-                          {' '}
-                          {/* Reducido el margen para adaptarse mejor */}
-                          EL COMPRADOR DEUDOR
-                        </span>
-                        <br />
-                        ALBERT JHOANY TREJOS VELARDE
-                        <br />
-                        C.C. No.9847172
-                        <br />
-                      </TableCell>
-                      <TableCell sx={{ padding: '8px', fontSize: '10px' }}>
-                        <Box
-                          sx={{
-                            border: '1px solid black',
-                            width: '70px',
-                            height: '100px',
-                            marginLeft: '65px',
-                          }}
-                        >
-                          <br />
-                          <br />
-                        </Box>
-                        <Box
-                          sx={{
-                            marginLeft: '65px',
-                          }}
-                        >
-                          HUELLA
-                        </Box>
-                      </TableCell>
-                    </tr>
-                  </Table>
-                  <Table>
-                    <tr>
-                      <TableCell sx={{ padding: '8px', fontSize: '10px' }}>
-                        <span style={{ marginRight: '20px' }}>
-                          {' '}
-                          {/* Reducido el margen para adaptarse mejor */}
-                          _______________________________
-                        </span>
-                        <br />
-                        <span style={{ marginRight: '20px' }}>
-                          {' '}
-                          {/* Reducido el margen para adaptarse mejor */}
-                          EL COMPRADOR DEUDOR
-                        </span>
-                        <br />
-                        ALBERT JHOANY TREJOS VELARDE
-                        <br />
-                        C.C. No.9847172
-                        <br />
-                      </TableCell>
-                      <TableCell sx={{ padding: '8px', fontSize: '10px' }}>
-                        <Box
-                          sx={{
-                            border: '1px solid black',
-                            width: '70px',
-                            height: '100px',
-                            marginLeft: '65px',
-                          }}
-                        >
-                          <br />
-                          <br />
-                        </Box>
-                        <Box
-                          sx={{
-                            marginLeft: '65px',
-                          }}
-                        >
-                          HUELLA
-                        </Box>
-                      </TableCell>
-                    </tr>
-                  </Table>
-                </Box>
+                
               </tbody>
             </Table>
             <table>

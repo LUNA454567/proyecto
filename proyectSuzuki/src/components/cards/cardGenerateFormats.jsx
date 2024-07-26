@@ -11,8 +11,7 @@ export default function CardGenerateFormats() {
           {/* <NavigationBar /> */}
         </Grid>
         {/* HEADER INFO */}
-        <Grid item xs={12}>
-        </Grid>
+        <Grid item xs={12}></Grid>
         {/* BUTTONS */}
         <Grid item xs={12}>
           {/* <ButtonsSection /> */}

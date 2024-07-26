@@ -1,8 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/joy/Grid';
-import '../style/printStyles.css'; // Asegúrate de importar el archivo CSS aquí
-// import TableRow from '@mui/material/TableRow';
+import '../style/printStyles.css';
 import TableBody from '@mui/material/TableBody';
 import Table from '@mui/joy/Table';
 import TableCell from '@mui/material/TableCell';
@@ -12,47 +11,177 @@ import { useReactToPrint } from 'react-to-print';
 import Button from '@mui/material/Button';
 import { Typography } from '@mui/material';
 import { fetchBillByNumber } from '../../services/apiService';
-// import { obtenerUltimoValorDia } from '../../services/apiService';
-//se añade
 import { useParams } from 'react-router-dom';
-//para convertir  los numeros a texto
-
 import axios from 'axios';
-import { toWords } from 'number-to-words';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+
+// Función para convertir números a texto en español
+function numeroATexto(num) {
+  const unidades = [
+    '',
+    'UNO',
+    'DOS',
+    'TRES',
+    'CUATRO',
+    'CINCO',
+    'SEIS',
+    'SIETE',
+    'OCHO',
+    'NUEVE',
+  ];
+  const decenas = [
+    '',
+    'DIEZ',
+    'VEINTE',
+    'TREINTA',
+    'CUARENTA',
+    'CINCUENTA',
+    'SESENTA',
+    'SETENTA',
+    'OCHENTA',
+    'NOVENTA',
+  ];
+  const especiales = [
+    'DIEZ',
+    'ONCE',
+    'DOCE',
+    'TRECE',
+    'CATORCE',
+    'QUINCE',
+    'DIECISEIS',
+    'DIECISIETE',
+    'DIECIOCHO',
+    'DIECINUEVE',
+  ];
+  const centenas = [
+    '',
+    'CIEN',
+    'DOCIENTOS',
+    'TRESCIENTOS',
+    'CUATROCIENTOS',
+    'QUINIENTOS',
+    'SEISCIENTOS',
+    'SETECIENTOS',
+    'OCHOCIENTOS',
+    'NOVECIENTOS',
+  ];
+
+  if (num === 0) return 'CERO';
+  if (num < 10) return unidades[num];
+  if (num < 20) return especiales[num - 10];
+  if (num < 100)
+    return (
+      decenas[Math.floor(num / 10)] +
+      (num % 10 !== 0 ? ' Y ' + unidades[num % 10] : '')
+    );
+  if (num < 1000) {
+    return (
+      (num === 100 ? 'CIEN' : centenas[Math.floor(num / 100)]) +
+      (num % 100 !== 0 ? ' ' + numeroATexto(num % 100) : '')
+    );
+  }
+
+  if (num < 1000000) {
+    return (
+      (Math.floor(num / 1000) === 1
+        ? 'MIL'
+        : numeroATexto(Math.floor(num / 1000)) + ' MIL') +
+      (num % 1000 !== 0 ? ' ' + numeroATexto(num % 1000) : '')
+    );
+  }
+
+  if (num < 1000000000) {
+    return (
+      (Math.floor(num / 1000000) === 1
+        ? 'UN MILLÓN'
+        : numeroATexto(Math.floor(num / 1000000)) + ' MILLONES') +
+      (num % 1000000 !== 0 ? ' ' + numeroATexto(num % 1000000) : '')
+    );
+  }
+
+  return 'NÚMERO FUERA DE RANGO';
+}
 
 export default function TPagareFinaval() {
+  const [day, setDay] = useState(null);
   const { id } = useParams();
-
-  const contentRef = useRef(); // Crear el ref
-  const [borderAxis] = React.useState('xBetween');
+  const contentRef = useRef();
+  const [borderAxis] = useState('xBetween');
   const [billData, setBillData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const searchTerm = 'searchTerm';
-
-  //para convertir  los numeros a texto
-  const [numbers, setNumbers] = useState([]);
-  const [numberWords, setNumberWords] = useState('');
+  const [pagareWords, setPagarerWords] = useState('');
+  const [cuotaWords, setCuotaWords] = useState('');
+  const [tasaeaWords, setTasaeaWords] = useState('');
+  const [facturaWords, setFacturaWords] = useState('');
+  const [plazoWords, setPlazoWords] = useState('');
+  const [inicialWords, setInicialWords] = useState('');
+  const [extrasWords, setExtrasWords] = useState('');
 
   const handlePrint = useReactToPrint({
     content: () => contentRef.current,
   });
 
   useEffect(() => {
-    console.log('useEffect triggered with searchTerm:', searchTerm);
+    console.log('useEffect triggered with searchTerm:', id);
     const getBillData = async () => {
       try {
         const dataResponse = await fetchBillByNumber(id);
-        console.log('aquiiiiiiiiii MAURO ES GAYY :', id, dataResponse);
-        //se añade
+        console.log('aquiiiiiiiiii :', id, dataResponse);
         setBillData(dataResponse.warehouse_GetBillByNumber_R);
 
-        // Convertir el valor del pagaré a texto
-        const valueInWords = toWords(
-          dataResponse.warehouse_GetBillByNumber_R[0].VLR_PAGARE,
-          { lang: 'es' } // Asegúrate de especificar el idioma como español
+        if (dataResponse.warehouse_GetBillByNumber_R.length > 0) {
+          let date = format(
+            new Date(dataResponse.warehouse_GetBillByNumber_R[0].FVTO_CTA1),
+            'd/MMMM/yyyy',
+            { locale: es }
+          );
+          let date_day = date.split('/')[0];
+          setDay(date_day);
+        }
+
+        const valueInWordsPagare = numeroATexto(
+          dataResponse.warehouse_GetBillByNumber_R[0].VLR_PAGARE
         );
-        setNumberWords(valueInWords);
+        setPagarerWords(valueInWordsPagare);
+
+        // Convertir VLR_CUOTA a texto
+        const valueInWordsCuota = numeroATexto(
+          dataResponse.warehouse_GetBillByNumber_R[0].VLR_CUOTA
+        );
+        setCuotaWords(valueInWordsCuota);
+
+        // Convertir TASAEA a texto
+        const valueInWordsTasaea = numeroATexto(
+          dataResponse.warehouse_GetBillByNumber_R[0].TASAEA
+        );
+        setTasaeaWords(valueInWordsTasaea);
+
+        // Convertir VLR_FACTURA a texto
+        const valueInWordsFactura = numeroATexto(
+          dataResponse.warehouse_GetBillByNumber_R[0].VLR_FACTURA
+        );
+        setFacturaWords(valueInWordsFactura);
+
+        // Convertir PLAZO a texto
+        const valueInWordsPlazo = numeroATexto(
+          dataResponse.warehouse_GetBillByNumber_R[0].PLAZO
+        );
+        setPlazoWords(valueInWordsPlazo);
+
+        // Convertir INICIAL a texto
+        const valueInWordsInicial = numeroATexto(
+          dataResponse.warehouse_GetBillByNumber_R[0].VLR_INICIAL
+        );
+        setInicialWords(valueInWordsInicial);
+
+        // Convertir INICIAL a texto
+        const valueInWordsExtras = numeroATexto(
+          dataResponse.warehouse_GetBillByNumber_R[0].NRO_EXTRAS
+        );
+        setExtrasWords(valueInWordsExtras);
+
       } catch (error) {
         console.log('Error fetching data:', error);
         setError(error);
@@ -75,20 +204,6 @@ export default function TPagareFinaval() {
 
   console.log('Data available:', billData);
 
-  console.log('Rendering data:', billData);
-
-  //para poner de numero a letras
-  axios
-    .get(
-      'http://192.168.6.100:10010/web/services/warehouse/numberBill/?pagare=${id}'
-    )
-    .then((response) => {
-      setNumbers(response.data);
-      const wordsArray = response.data.map((number) => toWords(number));
-      setNumberWords(wordsArray);
-    })
-    .catch((error) => console.error('Error fetching data: ', error));
-
   return (
     <>
       <Grid item xs={12}>
@@ -96,10 +211,8 @@ export default function TPagareFinaval() {
           style={{
             margin: '1px',
             padding: 0.1,
-            // border: '3px dashed grey',
             width: '100%',
           }}
-          // className="scrollable-container"
           ref={contentRef}
         >
           <TableContainer>
@@ -116,7 +229,6 @@ export default function TPagareFinaval() {
                   <td
                     style={{
                       width: '90px',
-                      // border: '3px dashed purple',
                       wordWrap: 'break-word',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
@@ -154,37 +266,36 @@ export default function TPagareFinaval() {
                     </b>{' '}
                     Sociedad con domicilio principal en Pereira – Risaralda, o a
                     su orden en sus oficinas de {billData[0].CIUDAD} la suma de{' '}
-                    {numberWords.toUpperCase()} PESOS MCTE.. - ($
-                    {billData[0].VLR_PAGARE}) mcte. En un plazo de TRES -{' '}
-                    {billData[0].PLAZO} meses y por TRES {billData[0].PLAZO}{' '}
+                    {pagareWords} PESOS MCTE.. - ($
+                    {billData[0].VLR_PAGARE}) mcte. En un plazo de {plazoWords} - (
+                    {billData[0].PLAZO}) meses y por {plazoWords}- ({billData[0].PLAZO}){' '}
                     cuotas mensuales, iguales y sucesivas que incluyen capital,
                     seguro colectivo de deudores e intereses remuneratorios, por
-                    el valor de QUINIENTOS SESENTA Y OCHO MIL CUATROCIENTOS
-                    DIECIOCHO PESOS MCTE.
-                    {billData[0].PLAZO} moneda legal colombiana cada una, la
-                    primera cuota será exigible el día {billData[0].FVTO_CTA1},
-                    y así sucesivamente el día SEIS {billData[0].FVTO_CTA1} de
+                    el valor de {cuotaWords} PESOS MCTE. (${' '}
+                    {billData[0].VLR_CUOTA} ) moneda legal colombiana cada una,
+                    la primera cuota será exigible el día{' '}
+                    {billData[0].FVTO_CTA1}, y así sucesivamente el día de {day}{' '}
                     cada uno de los meses venideros y {billData[0].NRO_EXTRAS}{' '}
-                    cuotas extras pagaderas así: . Para un total de UN MILLON
-                    SETECIENTOS CINCO MIL DOSCIENTOS CINCUENTA Y CUATRO PESOS
-                    MCTE. ({billData[0].VLR_PAGARE}) moneda legal. Durante el
-                    plazo reconoceré (mos) intereses liquidados sobre los saldos
-                    pendientes del capital a la tasa de CERO por ciento (
-                    {billData[0].TASAEA} ) Efectiva Anual, pagadero mes vencido,
-                    los cuales están incluidos en cada una de las cuotas
-                    pactadas. En caso de mora en el pago de una o más cuotas,
-                    pagare los intereses corrientes fijados por la ley y de
-                    hecho quedan vencidos todos los plazos y por tanto cancelaré
-                    en forma inmediata la totalidad de las cuotas restantes. La
-                    prórroga del plazo para el pago de una o más cuotas vencidas
-                    o el recibo de abonos parciales o en cantidad mayor a la
-                    convenida, no implica novación y en general, la omisión
-                    ocasional de <b> SUZUKI MOTOR DE COLOMBIA S.A.</b> en el
-                    ejercicio de uno cualquiera de los derechos derivados de
-                    este instrumentos no significa renuncia ni modificación de
-                    este ni de los demás derechos que por él tiene. El recibo de
-                    pago de una o más cuotas no presume el pago de los intereses
-                    correspondientes ni de mora, en su caso; autorizo a{' '}
+                    cuotas extras pagaderas así: . Para un total de{' '}
+                    {pagareWords} PESOS MCTE. (${billData[0].VLR_PAGARE}) moneda
+                    legal. Durante el plazo reconoceré (mos) intereses
+                    liquidados sobre los saldos pendientes del capital a la tasa
+                    de {tasaeaWords} por ciento ({billData[0].TASAEA}) Efectiva
+                    Anual, pagadero mes vencido, los cuales están incluidos en
+                    cada una de las cuotas pactadas. En caso de mora en el pago
+                    de una o más cuotas, pagare los intereses corrientes fijados
+                    por la ley y de hecho quedan vencidos todos los plazos y por
+                    tanto cancelaré en forma inmediata la totalidad de las
+                    cuotas restantes. La prórroga del plazo para el pago de una
+                    o más cuotas vencidas o el recibo de abonos parciales o en
+                    cantidad mayor a la convenida, no implica novación y en
+                    general, la omisión ocasional de{' '}
+                    <b> SUZUKI MOTOR DE COLOMBIA S.A.</b> en el ejercicio de uno
+                    cualquiera de los derechos derivados de este instrumentos no
+                    significa renuncia ni modificación de este ni de los demás
+                    derechos que por él tiene. El recibo de pago de una o más
+                    cuotas no presume el pago de los intereses correspondientes
+                    ni de mora, en su caso; autorizo a{' '}
                     <b>SUZUKI MOTOR DE COLOMBIA S.A.</b> para anotar los pagos
                     en los documentos o proformas que considere menester
                     expresamente manifiesto que serán de mi cargo todos los
@@ -203,7 +314,7 @@ export default function TPagareFinaval() {
                     {billData[0].CIUDAD} Residenciado en {billData[0].CL_CIUDAD}{' '}
                     en {billData[0].CL_DIRECCION}; Titular de la cédula de
                     ciudadanía No.{billData[0].CL_NROID} de{' '}
-                    {billData[0].CL_CIUEXP}, quien se denominará el
+                    {billData[0].CL_CIUEXP}, quien se denominará el{' '}
                     <b>COMPRADOR</b> por la otra parte, que se contiene y se
                     rige por las siguientes cláusulas: PRIMERA: El VENDEDOR
                     entrega en calidad de venta al <b> COMPRADOR</b> un vehículo
@@ -261,26 +372,23 @@ export default function TPagareFinaval() {
                       fontSize: '10px',
                     }}
                   >
-                    <b>SEGUNDA</b> : El precio total de esta venta es la suma de
-                    SIETE MILLONES CIENTO VEINTISIETE MIL CINCUENTA Y CUATRO
-                    PESOS MCTE. (${billData[0].VLR_FACTURA}) moneda legal, que
-                    el
+                    <b>SEGUNDA</b> : El precio total de esta venta es la suma de{' '}
+                    {facturaWords} PESOS MCTE. (${billData[0].VLR_FACTURA})
+                    moneda legal, que el
                     <b> COMPRADOR</b> pagará a la <b> VENDEDORA</b> o a su orden
-                    en la ciudad de {billData[0].CIUDAD} así: a) la suma de
-                    CINCO MILLONES CUATROCIENTOS VEINTIUNO MIL OCHOCIENTOS PESOS
-                    MCTE. (${billData[0].VLR_INICIA}) moneda legal, valor de
+                    en la ciudad de {billData[0].CIUDAD} así: a) la suma de{' '}
+                    {inicialWords} PESOS
+                    MCTE. (${billData[0].VLR_INICIAL}) moneda legal, valor de
                     cuota inicial que la
                     <b> VENDEDORA</b> declara recibida a satisfacción de manos
-                    del comprador. b)la suma de UN MILLON SETECIENTOS CINCO MIL
-                    DOSCIENTOS CINCUENTA Y CUATRO PESOS MCTE. ($
+                    del comprador. b)la suma de {pagareWords} PESOS MCTE. ($
                     {billData[0].VLR_PAGARE}) moneda legal, valor del saldo del
                     precio del vehículo que el <b>COMPRADOR</b> pagará a la{' '}
-                    <b> VENDEDORA</b> en TRES ({billData[0].PLAZO}) cuotas
-                    mensuales iguales y sucesivas cada una de QUINIENTOS SESENTA
-                    Y OCHO MIL CUATROCIENTOS DIECIOCHO PESOS MCTE. ($
+                    <b> VENDEDORA</b> en {plazoWords} ({billData[0].PLAZO}) cuotas
+                    mensuales iguales y sucesivas cada una de {cuotaWords} PESOS MCTE. ($
                     {billData[0].VLR_CUOTA}) moneda legal, la primera de ellas
                     el día {billData[0].FVTO_CTA1} y {billData[0].NRO_EXTRAS}{' '}
-                    (0) cuota(s) extra(s) pagadera(s) así:
+                    ({extrasWords}) cuota(s) extra(s) pagadera(s) así:
                   </TableCell>
                 </tr>
                 <tr>
@@ -304,7 +412,7 @@ export default function TPagareFinaval() {
                     extrajudiciales que eventualmente hiciere la{' '}
                     <b>VENDEDORA</b> para obtener su pago. <b>QUINTA</b>: En tal
                     virtud el <b>COMPRADOR</b> declara que: a) En el momento de
-                    la firma del presenteCONTRATO ya tiene recibido
+                    la firma del presente CONTRATO ya tiene recibido
                     materialmente el bien dado en venta, en perfecto estado de
                     servicio y mantenimiento y en el mismo estado se obliga a
                     conservarlo a su costa. b) Reconoce su calidad de deudor con
@@ -320,7 +428,7 @@ export default function TPagareFinaval() {
                     vehículo fuera de la República de Colombia. f) Se obliga a
                     no vender, transformar, grabar, enajenar, modificar o
                     alterar el vehículo o cambiarle su destinación. En caso de
-                    resolución del <b>CONTRATO</b>, elCOMPRADOR cede a la{' '}
+                    resolución del <b>CONTRATO</b>, el COMPRADOR cede a la{' '}
                     <b>VENDEDORA</b> gratuitamente las mejoras que hubiere
                     realizado al bien y expresamente renuncia al derecho de
                     retención sobre el mismo. g) Se compromete a notificar a la{' '}

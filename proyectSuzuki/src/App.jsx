@@ -16,6 +16,7 @@ import viewReplaceFormPladgeWithoutCreditorTenure from './views/viewReplaceFormP
 // import DownloadButton from './components/buttons/downloadButton';
 import PrintButton from './components/buttons/downloadButton';
 import TPagareFinaval from './components/textos/tPagareFinaval';
+import TreplacePladgeWithoutCreditorTenure from './components/textos/tPladgeWithoutCreditorTenure';
 import { ContextProvider } from './context/context';
 
 export const App = () => {
@@ -55,11 +56,12 @@ export const App = () => {
             Component={viewReplaceFormConstanceFinaval}
           />
           <Route
-            path="viewReplaceFormPladgeWithoutCreditorTenure"
+            path="/viewReplaceFormPladgeWithoutCreditorTenure"
             Component={viewReplaceFormPladgeWithoutCreditorTenure}
           />
           <Route path="/DownloadButton" Component={PrintButton} />
           <Route path="/tPagareFinaval" Component={TPagareFinaval} />
+          <Route path="/tReplacePladgeWithoutCreditorTenure" Component={TreplacePladgeWithoutCreditorTenure} />
         </Routes>
       </ContextProvider>
     </>

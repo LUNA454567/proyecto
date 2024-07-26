@@ -1,150 +1,149 @@
-// import * as React from 'react';
+import * as React from 'react';
+import { useContext, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import OkCancelButton from '../buttons/buttonOkCan';
-
-import { Link } from 'react-router-dom';
+import Card from '@mui/joy/Card';
 import Button from '@mui/material/Button';
+import OkCancelButton from '../buttons/buttonOkCan';
+import { Context } from '../../context/context.jsx';
 
-// import OkCancelButton from '../buttons/buttonOkCan';
-import { useState } from 'react';
-
-export default function FormPropsTextFieldsPladgeGeneration({ handleCancel }) {
-  //NAME OF THE LEGAL REPRESENTATIVE
+export default function FormPropsTextFieldsPladgeGeneration({
+  handleCancel,
+  handleShowAdditionalView,
+}) {
   const [nameLegalRepresentative, setNameLegalRepresentative] = useState('');
-
-  const handleNameLegalRepresentativeConsChange = (event) => {
-    const value = event.target.value.replace(/[^A-Za-z\s]/gi, '');
-    setNameLegalRepresentative(value);
-  };
-
-  //ID NUMBER
   const [idNumber, setIdNumber] = useState('');
-
-  const handleIdNumberConsChange = (event) => {
-    const value = event.target.value.replace(/[^A-Za-z\s]/gi, '');
-    setIdNumber(value);
-  };
-
-  //CITY OF  EXPEDITION
   const [cityExpedition, setCityExpedition] = useState('');
 
-  const handleCityExpedition = (event) => {
-    const value = event.target.value.replace(/[^A-Za-z\s]/gi, '');
-    setCityExpedition(value);
-  };
+  const handleSubmit = (event) => {
+    event.preventDefault();
 
-  // buttons ok cancel
-  const [message, setMessage] = useState('');
+    const newFormData = {
+      nameLegalRepresentative,
+      idNumber,
+      cityExpedition,
+    };
 
-  const handleAccept = () => {
-    setMessage('Accepted');
+    localStorage.setItem('formData', JSON.stringify(newFormData));
+    console.log('Datos guardados en localStorage:', newFormData);
+
+    handleCancel(); // Cerrar el modal
+    handleShowAdditionalView(); // Mostrar la vista adicional
   };
 
   return (
     <Box
-      component="form"
       sx={{
-        '& .MuiTextField-root': { m: 1, width: '100%' }, // Style for all TextFields within the form
-        // You can add more custom styles here
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        height: 'auto',
       }}
-      noValidate
-      autoComplete="off"
     >
-      <div>
-        {/* TextField for nameLegalRepresentative */}
-        <TextField
-          autoFocus
-          required
-          value={nameLegalRepresentative}
-          onChange={handleNameLegalRepresentativeConsChange}
-          name="nameLegalRepresentative"
-          label="Nombre del Representante Legal:"
-          size="sm"
-          variant="standard" // Add a border to the TextField
-          sx={{ mb: 2 }} // Add bottom margin
-          InputProps={{
-            // Styles for the input of the TextField
-            style: { paddingRight: '0.5rem' }, // Add space to the right of the input
+      <Card
+        sx={{
+          width: 520,
+          border: 'solid',
+        }}
+      >
+        <Box
+          component="form"
+          sx={{
+            '& .MuiTextField-root': { m: 1, width: '100%' },
           }}
-        />
-
-        {/* TextField for IDNUMBER */}
-        <TextField
-          required
-          value={idNumber}
-          onChange={handleIdNumberConsChange}
-          name="idNumber"
-          label="Numero de Cedula:"
-          size="sm"
-          variant="standard" // Add a border to the TextField
-          sx={{ mb: 2 }} // Add bottom margin
-          InputProps={{
-            // Styles for the input of the TextField
-            style: { paddingRight: '0.5rem' }, // Add space to the right of the input
-          }}
-        />
-
-        {/* TextField for  EXPEDITION */}
-        <TextField
-          required
-          value={cityExpedition}
-          onChange={handleCityExpedition}
-          name="cityExpedition"
-          label="Numero de Cedula:"
-          size="sm"
-          variant="standard" // Add a border to the TextField
-          sx={{ mb: 2 }} // Add bottom margin
-          InputProps={{
-            // Styles for the input of the TextField
-            style: { paddingRight: '0.5rem' }, // Add space to the right of the input
-          }}
-        />
-
-        {/* buttons */}
-        <Grid item xs={12}>
-          {' '}
-          {/* New Grid item for buttons */}
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            {' '}
-            {/* Centers the buttons */}
-            <OkCancelButton onAccept={handleAccept} onCancel={handleCancel} />
-            <Button
-              type="submit"
-              variant="outlined"
-              disabled={
-                nameLegalRepresentative === '' ||
-                idNumber === '' ||
-                cityExpedition === ''
-              }
-              sx={{
-                mb: 2,
-                bgcolor: 'green',
-                color: 'white',
-                alignItems: 'center',
-                marginTop: '0px',
-                marginLeft: '80px',
-                width: '100px',
-                height: '40px',
-                fontSize: '12px',
-                textAlign: 'center',
-                '&:hover': {
-                  bgcolor: 'green', // Mantiene el mismo color de fondo cuando se pasa el mouse
-                  color: 'white', // Mantiene el mismo color de texto cuando se pasa el mouse
-                },
+          noValidate
+          autoComplete="off"
+          onSubmit={handleSubmit}
+        >
+          <div>
+            <TextField
+              autoFocus
+              required
+              value={nameLegalRepresentative}
+              onChange={(e) => {
+                const input = e.target.value;
+                if (/^[a-zA-Z\s]*$/.test(input)) {
+                  setNameLegalRepresentative(input);
+                }
               }}
-            >
-              <Link
-                to="/viewReplaceFormCreditStatement"
-                style={{ color: 'white' }}
-              >
-                ACEPTAR
-              </Link>
-            </Button>
+              name="nameLegalRepresentative"
+              label="Nombre del Representante Legal:"
+              size="small"
+              variant="standard"
+              sx={{ mb: 2 }}
+              InputProps={{
+                style: { paddingRight: '0.5rem' },
+              }}
+            />
+            <TextField
+              required
+              value={idNumber}
+              onChange={(e) => {
+                const input = e.target.value;
+                if (/^\d*$/.test(input)) {
+                  setIdNumber(input);
+                }
+              }}
+              name="idNumber"
+              label="Número de Cédula:"
+              size="small"
+              variant="standard"
+              sx={{ mb: 2 }}
+              inputProps={{ pattern: '[0-9]+' }}
+            />
+            <TextField
+              required
+              value={cityExpedition}
+              onChange={(e) => {
+                const input = e.target.value;
+                if (/^[a-zA-Z\s]*$/.test(input)) {
+                  setCityExpedition(input);
+                }
+              }}
+              name="cityExpedition"
+              label="Ciudad de Expedición:"
+              size="small"
+              variant="standard"
+              sx={{ mb: 2 }}
+              InputProps={{
+                style: { paddingRight: '0.5rem' },
+              }}
+            />
+            <Grid item xs={12}>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <OkCancelButton onCancel={handleCancel} />
+                <Button
+                  type="submit"
+                  variant="outlined"
+                  disabled={
+                    nameLegalRepresentative === '' ||
+                    idNumber === '' ||
+                    cityExpedition === ''
+                  }
+                  sx={{
+                    mb: 2,
+                    bgcolor: 'green',
+                    color: 'white',
+                    marginTop: 0,
+                    marginLeft: '80px',
+                    width: '100px',
+                    height: '40px',
+                    fontSize: '12px',
+                    textAlign: 'center',
+                    '&:hover': {
+                      bgcolor: 'green',
+                      color: 'white',
+                    },
+                  }}
+                >
+                  ACEPTAR
+                </Button>
+              </div>
+            </Grid>
           </div>
-        </Grid>
-      </div>
+        </Box>
+      </Card>
     </Box>
   );
 }

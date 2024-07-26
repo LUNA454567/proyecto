@@ -44,7 +44,7 @@ export default function ModalDia({ openModal }) {
         <Box sx={{ ...style, width: 400 }}>
           <Box component="section" sx={{ p: 0.5, border: '0px dashed grey' }}>
             {/* TITLE */}
-            <h2>CONSTANCIA AL DÍA</h2>
+            <h2>CONSTANCIA AL DÍAas</h2>
             <IconButton
               aria-label="close"
               onClick={handleClose}

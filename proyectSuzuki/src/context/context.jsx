@@ -28,6 +28,11 @@ export const ContextProvider = ({ children }) => {
   const [clientPhone, setClientPhone] = useState('');
   const [clientEmail, setClientEmail] = useState('');
 
+  //form generar prenda
+  const [nameLegalRepresentative, setNameLegalRepresentative] = useState('');
+  const [idNumber, setIdNumber] = useState('');
+  const [cityExpedition, setCityExpedition] = useState('');
+
   return (
     <Context.Provider
       value={{
@@ -69,6 +74,13 @@ export const ContextProvider = ({ children }) => {
         setClientPhone,
         clientEmail,
         setClientEmail,
+        //form generar prenda
+        nameLegalRepresentative,
+        setNameLegalRepresentative,
+        idNumber,
+        setIdNumber,
+        cityExpedition,
+        setCityExpedition,
       }}
     >
       {children}

@@ -44,7 +44,7 @@ export default function GenerateFormats() {
         </Grid>
         {/* HEADER INFO */}
         <Grid item xs={12}>
-          <Box sx={{ margin: '1px', padding: 0.1, border: '0px dashed grey' }}>
+          <Box sx={{ margin: '0px', padding: 0.1, border: '0px dashed grey' }}>
             <Card sx={{ minWidth: 275 }} elevation={5}>
               <Box
                 component="section"

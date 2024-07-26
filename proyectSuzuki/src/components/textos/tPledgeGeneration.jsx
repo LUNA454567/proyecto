@@ -5,54 +5,53 @@ import Grid from '@mui/material/Grid';
 import OkCancelButton from '../buttons/buttonOkCan';
 import { useState } from 'react';
 import Card from '@mui/joy/Card';
-import { Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
+import ViewReplaceFormPladgeWithoutCreditorTenure from '../../views/viewReplaceFormPladgeWithoutCreditorTenure'
 
 export default function FormPropsTextFieldsPladgeGeneration({ handleCancel }) {
-  // NAME OF THE LEGAL REPRESENTATIVE
+  // Estados del formulario
   const [nameLegalRepresentative, setNameLegalRepresentative] = useState('');
-
-  const handleNameLegalRepresentativeConsChange = (event) => {
-    const value = event.target.value.replace(/[^A-Za-z\s]/gi, '');
-    setNameLegalRepresentative(value);
-  };
-
-  // ID NUMBER
   const [idNumber, setIdNumber] = useState('');
-
-  const handleIdNumberConsChange = (event) => {
-    const value = event.target.value.replace(/[^A-Za-z\s]/gi, '');
-    setIdNumber(value);
-  };
-
-  // CITY OF EXPEDITION
   const [cityExpedition, setCityExpedition] = useState('');
 
-  const handleCityExpedition = (event) => {
-    const value = event.target.value.replace(/[^A-Za-z\s]/gi, '');
-    setCityExpedition(value);
-  };
+  // Estado para guardar los datos del formulario
+  const [formData, setFormData] = useState({});
 
-  // Buttons ok cancel
-  const [message, setMessage] = useState('');
+  // Estado para controlar la visibilidad del componente adicional
+  const [showAdditionalView, setShowAdditionalView] = useState(false);
 
-  const handleAccept = () => {
-    setMessage('Accepted');
+  // Manejo de la sumisión del formulario
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    const newFormData = {
+      nameLegalRepresentative,
+      idNumber,
+      cityExpedition,
+    };
+
+    setFormData(newFormData);
+    localStorage.setItem('formData', JSON.stringify(newFormData));
+
+    console.log('Datos guardados en localStorage:', newFormData);
+    <viewReplaceFormPladgeWithoutCreditorTenure />
+
+    // Mostrar el componente adicional
+    setShowAdditionalView(true);
   };
 
   return (
     <Box
       sx={{
         display: 'flex',
-        justifyContent: 'center',
+        flexDirection: 'column', // Permite que los elementos hijos se apilen verticalmente
         alignItems: 'center',
-        height: '50vh', // Makes the container take the full height of the viewport
+        height: 'auto', // Ajusta la altura según el contenido
       }}
     >
       <Card
         sx={{
           width: 520,
-          height: '40vh',
           border: 'solid',
         }}
       >
@@ -64,6 +63,7 @@ export default function FormPropsTextFieldsPladgeGeneration({ handleCancel }) {
           }}
           noValidate
           autoComplete="off"
+          onSubmit={handleSubmit}
         >
           <div>
             {/* TextField for nameLegalRepresentative */}
@@ -71,7 +71,14 @@ export default function FormPropsTextFieldsPladgeGeneration({ handleCancel }) {
               autoFocus
               required
               value={nameLegalRepresentative}
-              onChange={handleNameLegalRepresentativeConsChange}
+              onChange={(event) => {
+                // Obtén el valor del campo
+                const newValue = event.target.value;
+                // Usa una expresión regular para permitir solo letras y espacios
+                const filteredValue = newValue.replace(/[^a-zA-Z\s]/g, '');
+                // Actualiza el estado solo con los caracteres válidos
+                setNameLegalRepresentative(filteredValue);
+              }}
               name="nameLegalRepresentative"
               label="Nombre del Representante Legaaal:"
               size="sm"
@@ -87,23 +94,34 @@ export default function FormPropsTextFieldsPladgeGeneration({ handleCancel }) {
             <TextField
               required
               value={idNumber}
-              onChange={handleIdNumberConsChange}
+              onChange={(event) => {
+                // Obtén el valor del campo
+                const newValue = event.target.value;
+                // Usa una expresión regular para permitir solo números
+                const filteredValue = newValue.replace(/[^0-9]/g, '');
+                // Actualiza el estado solo con los números válidos
+                setIdNumber(filteredValue);
+              }}
               name="idNumber"
-              label="Numero de Cedula:"
+              label="Número de Cédula:"
               size="sm"
               variant="standard" // Add a border to the TextField
               sx={{ mb: 2 }} // Add bottom margin
-              InputProps={{
-                // Styles for the input of the TextField
-                style: { paddingRight: '0.5rem' }, // Add space to the right of the input
-              }}
+              inputProps={{ pattern: '[0-9]+' }}
             />
 
             {/* TextField for EXPEDITION */}
             <TextField
               required
               value={cityExpedition}
-              onChange={handleCityExpedition}
+              onChange={(event) => {
+                // Obtén el valor del campo
+                const newValue = event.target.value;
+                // Usa una expresión regular para permitir solo letras y espacios
+                const filteredValue = newValue.replace(/[^a-zA-Z\s]/g, '');
+                // Actualiza el estado solo con los caracteres válidos
+                setCityExpedition(filteredValue);
+              }}
               name="cityExpedition"
               label="Ciudad de Expedición:"
               size="sm"
@@ -122,48 +140,53 @@ export default function FormPropsTextFieldsPladgeGeneration({ handleCancel }) {
               <div style={{ display: 'flex', justifyContent: 'center' }}>
                 {' '}
                 {/* Centers the buttons */}
-                <OkCancelButton
-                  onAccept={handleAccept}
-                  onCancel={handleCancel}
-                />
+                <OkCancelButton onCancel={handleCancel} />
                 <Button
-              type="submit"
-              variant="outlined"
-              disabled={
-                nameLegalRepresentative === '' ||
-                idNumber === '' ||
-                cityExpedition === '' 
-                
-              }
-              sx={{
-                mb: 2,
-                bgcolor: 'green',
-                color: 'white',
-                alignItems: 'center',
-                marginTop: '0px',
-                marginLeft: '80px',
-                width: '100px',
-                height: '40px',
-                fontSize: '12px',
-                textAlign: 'center',
-                '&:hover': {
-                  bgcolor: 'green', // Mantiene el mismo color de fondo cuando se pasa el mouse
-                  color: 'white', // Mantiene el mismo color de texto cuando se pasa el mouse
-                },
-              }}
-            >
-              <Link
-                to="/viewReplaceFormPladgeWithoutCreditorTenure"
-                style={{ color: 'white' }}
-              >
-                ACEPTAR
-              </Link>
-            </Button>
+                  type="submit"
+                  variant="outlined"
+                  disabled={
+                    nameLegalRepresentative === '' ||
+                    idNumber === '' ||
+                    cityExpedition === ''
+                  }
+                  sx={{
+                    mb: 2,
+                    bgcolor: 'green',
+                    color: 'white',
+                    alignItems: 'center',
+                    marginTop: '0px',
+                    marginLeft: '80px',
+                    width: '100px',
+                    height: '40px',
+                    fontSize: '12px',
+                    textAlign: 'center',
+                    '&:hover': {
+                      bgcolor: 'green', // Mantiene el mismo color de fondo cuando se pasa el mouse
+                      color: 'white', // Mantiene el mismo color de texto cuando se pasa el mouse
+                    },
+                  }}
+                >
+                  ACEPTAR
+                </Button>
               </div>
             </Grid>
           </div>
         </Box>
       </Card>
+
+      {/* Renderiza el componente adicional condicionalmente */}
+      {showAdditionalView && (
+        <Box
+          sx={{
+            marginTop: '20px', // Añade espacio entre el formulario y el componente adicional
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
+          <ViewReplaceFormPladgeWithoutCreditorTenure />
+        </Box>
+      )}
     </Box>
   );
 }

@@ -12,7 +12,7 @@ function CustomTable({ data }) {
     const newPath = `viewGenerateFormats/${id}`;
     console.log('New path:', newPath);
     navigate(newPath);
-  }
+  };
 
   return (
     <Table aria-label="basic table">
