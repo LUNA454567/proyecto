@@ -1,12 +1,11 @@
 import * as React from 'react';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/joy/Card';
 import Button from '@mui/material/Button';
 import OkCancelButton from '../buttons/buttonOkCan';
-import { Context } from '../../context/context.jsx';
 
 export default function FormPropsTextFieldsPladgeGeneration({
   handleCancel,

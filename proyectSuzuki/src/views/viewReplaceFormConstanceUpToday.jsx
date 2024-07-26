@@ -17,7 +17,6 @@ import { useReactToPrint } from 'react-to-print';
 import Tab from '@mui/material/Tab';
 import { Link } from 'react-router-dom';
 
-
 export default function ReplaceFormConstanceUpToday() {
   const contentRef = useRef(); // Crear el ref
   const [openModalPladge, setOpenModalPladge] = useState(false);
@@ -28,7 +27,6 @@ export default function ReplaceFormConstanceUpToday() {
   const handleCloseModalPladge = () => {
     setOpenModalPladge(false);
   };
-  
 
   return (
     <>
@@ -54,7 +52,7 @@ export default function ReplaceFormConstanceUpToday() {
                   justifyContent: 'space-between',
                 }}
               >
-                  <Alert  variant="outlined">CONSTANCIA</Alert>
+                <Alert variant="outlined">CONSTANCIA</Alert>
                 <Tab
                   sx={{}}
                   component={Link}
@@ -68,7 +66,7 @@ export default function ReplaceFormConstanceUpToday() {
                   // border
                   ref={contentRef} // Asignar el ref al contenido que se va a imprimir
                 >
-                  <TreplaceFormConstanceUpToday/>
+                  <TreplaceFormConstanceUpToday />
                 </Box>
               </CardContent>
             </Card>
@@ -84,6 +82,3 @@ export default function ReplaceFormConstanceUpToday() {
     </>
   );
 }
-
-
-

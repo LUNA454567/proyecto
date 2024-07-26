@@ -1,8 +1,7 @@
-import React, { useContext, useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/joy/Grid';
 import '../style/printStyles.css'; // Asegúrate de importar el archivo CSS aquí
-// import TableRow from '@mui/material/TableRow';
 import TableBody from '@mui/material/TableBody';
 import Table from '@mui/joy/Table';
 import TableCell from '@mui/material/TableCell';
@@ -10,37 +9,38 @@ import { TableContainer } from '@mui/material';
 import CardActions from '@mui/material/CardActions';
 import { useReactToPrint } from 'react-to-print';
 import Button from '@mui/material/Button';
-import { Context } from '../../context/context.jsx';
 import { Link } from 'react-router-dom';
 import { fetchBillByNumber } from '../../services/apiService';
 import { useParams } from 'react-router-dom';
 
 export default function TreplacePladgeWithoutCreditorTenure() {
   const { id } = useParams();
-  console.log(id, 'idddd');
-
   const contentRef = useRef(); // Crear el ref
-  const [borderAxis] = React.useState('xBetween');
+  const [borderAxis] = useState('xBetween');
   const [billData, setBillData] = useState(null);
-  console.log(billData, 'aquii dataaaaaaaa');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const searchTerm = 'searchTerm';
 
-  const { nameLegalRepresentative, idNumber, cityExpedition } =
-    useContext(Context);
+  const [formData, setFormData] = useState({
+    nameLegalRepresentative: '',
+    idNumber: '',
+    cityExpedition: '',
+  });
 
   const handlePrint = useReactToPrint({
     content: () => contentRef.current,
   });
 
   useEffect(() => {
-    console.log('useEffect triggered witg searchTerm', searchTerm);
+    const savedFormData = localStorage.getItem('formData');
+    if (savedFormData) {
+      setFormData(JSON.parse(savedFormData));
+    }
+
     const getBillData = async () => {
       try {
         const dataResponse = await fetchBillByNumber(id);
-        console.log('aquiiiiiiiiii:', id, dataResponse);
-        //se añade
         setBillData(dataResponse.warehouse_GetBillByNumber_R);
       } catch (error) {
         console.log('Error fetching data:', error);
@@ -53,16 +53,12 @@ export default function TreplacePladgeWithoutCreditorTenure() {
   }, [id]);
 
   if (loading) {
-    console.log('Loading data...');
     return <p>Loading...</p>;
   }
 
-  // if (billData) {
-  //   console.log('No data available');
-  //   return <p>No data available hola</p>;
-  // }
-
-  // console.log('Data available:', billData);
+  if (!billData) {
+    return <p>No data available</p>;
+  }
 
   return (
     <>
@@ -81,10 +77,8 @@ export default function TreplacePladgeWithoutCreditorTenure() {
           style={{
             margin: '1px',
             padding: 0.1,
-            // border: '3px dashed grey',
             width: '100%',
           }}
-          // className="scrollable-container"
           ref={contentRef}
         >
           <TableContainer
@@ -123,13 +117,14 @@ export default function TreplacePladgeWithoutCreditorTenure() {
                     ciudadanía No. {billData[0].CL_NROID} expedida en{' '}
                     {billData[0].CL_CIUEXP} , obrando en su propio nombre e
                     interés, de una parte, quien en adelante se denominará EL
-                    DEUDOR y de la otra, {nameLegalRepresentative}, mayor de edad, domiciliado
-                    en {billData[0].CIUDAD} en {billData[0].DIR_ALMACEN},
-                    identificado con la cédula de ciudadanía No.{idNumber} expedida en
-                    {cityExpedition}, obrando en nombre y representación en calidad de
-                    REPRESENTANTE LEGAL de SUZUKI MOTOR DE COLOMBIA S.A. con NIT
-                    891.410.137-2, entidad domiciliada en Pereira y en este caso
-                    sucursal{' '}
+                    DEUDOR y de la otra, {formData.nameLegalRepresentative},
+                    mayor de edad, domiciliado en {billData[0].CIUDAD} en{' '}
+                    {billData[0].DIR_ALMACEN}, identificado con la cédula de
+                    ciudadanía No. {formData.idNumber} expedida en
+                    {formData.cityExpedition}, obrando en nombre y
+                    representación en calidad de REPRESENTANTE LEGAL de SUZUKI
+                    MOTOR DE COLOMBIA S.A. con NIT 891.410.137-2, entidad
+                    domiciliada en Pereira y en este caso sucursal{' '}
                     {billData[0].CIUDAD}, todo lo cual acredita con el
                     Certificado expedido por la Cámara de Comercio, que presenta
                     y hace parte integral del presente documento, quien en
@@ -214,89 +209,91 @@ export default function TreplacePladgeWithoutCreditorTenure() {
                     DEUDOR a favor de EL ACREEDOR. SEXTA: Para los efectos
                     legales correspondientes se toma como fecha de vencimiento
                     de la obligación asegurada por medio de la prenda aquí
-                    constituida, el día de su vencimiento, esto es el{billData[0].FVTO_PAG}. Sin perjuicio de lo anterior,la obligación global
-                    se vencerá anticipadamente cuando quiera que se presente las
-                    siguientes eventualidades:A.- Por el simple retraso en el
-                    pago de uno o más instalamentos por pagar del título valor o
-                    documento otorgado por EL DEUDOR a favor de EL ACREEDOR. En
-                    este caso, bastará EL ACREEDOR presentar ante el respectivo
-                    Juez, este documento de prenda y otros títulos valores o
-                    documentos en que consten las deudas correspondientes. B.-
-                    Por no poner a disposición de EL ACREEDOR el vehículo dado
-                    en prenda dentro de las 24 horas siguientes a la
-                    comunicación fehaciente, dirigida a la residencia registrada
-                    ante EL ACREEDOR por EL DEUDOR, en la cual solicita la
-                    presentación del automotor pignorado para su inspección. Y
-                    C.- Por incumplimiento de cualquiera de las obligaciones
-                    contraídas en el presente contrato.<br></br> Todo lo anterior sin
-                    menoscabo de las acciones civiles y penales a que tenga
-                    derecho EL ACREEDOR. PARÁGRAFO: No obstante el vencimiento
-                    establecido para la obligación asegurada, la Prenda
-                    conservará su vigencia mientras existan obligaciones
-                    pendientes de pago, sean directas o indirectas a cargo de EL
-                    DEUDOR y a favor de EL ACREEDOR y mientras esta no cancele
-                    en forma expresa y escrita el gravamen prendario que por
-                    medio de este contrato se constituye. SÉPTIMA: Son
-                    obligaciones especiales de EL DEUDOR: a) Pagar la totalidad
-                    de los gastos originados con ocasión la prenda del vehículo
-                    y del cobro, así como los impuestos de timbre, papel sellado
-                    que cause el contrato, gastos de matrícula, licencia de
-                    circulación, placas, registro de la prenda, etc. B) Pagar la
-                    totalidad de las sumas que resulten de la imposición de
-                    multas y sanciones por infracciones de policía o de
-                    tránsito, indemnizaciones a terceros por daños ocasionados
-                    en el manejo del vehículo y en general, la totalidad de los
-                    gastos que en una u otra forma puedan derivarse del vehículo
-                    objeto de la prenda. C) Permitir al ACREEDOR el derecho de
-                    inspección sobre el estado del vehículo dado en prenda, para
-                    cuyo efecto presentará la motocicleta en el sitio que
-                    indique EL ACREEDOR, cada vez que este así lo requieran. D)
-                    Mantener en perfecto estado de funcionamiento ejecutando a
-                    su costa las revisiones periódicas y las reparaciones
-                    necesarias. E) Informar al ACREEDOR, cualquier cambio de
-                    domicilio o residencia dentro de los 10 días siguientes a la
-                    fecha en que se realice. F) EL DEUDOR está obligado a
-                    gestionar lo pertinente de este contrato ante la respectiva
-                    Oficina de Tránsito, debiendo entregar al ACREEDOR fotocopia
-                    de la Tarjeta de Propiedad en que obre la misma constancia y
-                    entregar el original del presente documento de prenda
-                    debidamente sellado por la Oficina de Tránsito respectiva.
-                    OCTAVA: En caso de mora de EL DEUDOR en el pago de
-                    cualquiera de las cuotas o de su interés, o si usare el
-                    vehículo a juicio de EL ACREEDOR en forma prejudicial o
-                    peligrosa a sus intereses, o si la motocicleta fuere
-                    perseguida judicialmente, por vía administrativa o por
-                    terceros, o si causaren daños a terceros con el vehículo, y
-                    en general si EL DEUDOR dejare de cumplir cualquiera de las
-                    obligaciones a su cargo derivadas del presente contrato,
-                    podrá EL ACREEDOR proceder a exigir el pago de la totalidad
-                    de los saldos pendientes, sin consideración a los plazos
-                    convenidos. De optar EL ACREEDOR por la facultad anterior,
-                    será obligación de EL DEUDOR restituir inmediatamente el
-                    vehículo, y en caso contrario, podrá EL ACREEDOR tomarlo en
-                    cualquier lugar que se encuentre bajo la responsabilidad y a
-                    costa del comprador, en tanto las autoridades judiciales
-                    resuelvan. NOVENA: No podrá EL DEUDOR oponerse en ningún
-                    caso a la toma del vehículo, en forma alguna, ni ejercitar
-                    retención sobre el mismo, ni alegar u oponerse por mejoras,
-                    reparaciones, adiciones, etc., ya que a éstas se extiende la
-                    prenda. Para los efectos anteriores podrá EL ACREEDOR obrar
-                    por si, o recurrir a las autoridades judiciales,
-                    administrativas o de circulación, para que mediante la
-                    simple presentación de este documento, y sin necesidad de
-                    acompañar otra prueba le presenten la 25/7/24, 12:13 p.m.
-                    1/2 protección para recuperar la tenencia del vehículo
-                    mencionado. DECIMA: Sin perjuicio de otras acciones civiles
-                    y penales podrá EL ACREEDOR tomar las medidas preventivas
-                    que considere necesarias para garantizar el pago de los
-                    perjuicios causados haciendo efectivo para ello los títulos
-                    valores o documentos aceptados por EL DEUDOR, hasta la
-                    concurrencia del valor de los créditos. Y en el evento de
-                    que el valor comercial del vehículo no cubra lo adeudado, EL
-                    ACREEDOR con el título valor (pagaré) podrá perseguir otros
-                    bienes hasta la cancelación total de las deudas. DECIMA
-                    PRIMERA: EL DEUDOR queda facultado para cancelar el total de
-                    la obligación u obligaciones en cualquier tiempo antes del
+                    constituida, el día de su vencimiento, esto es el
+                    {billData[0].FVTO_PAG}. Sin perjuicio de lo anterior,la
+                    obligación global se vencerá anticipadamente cuando quiera
+                    que se presente las siguientes eventualidades:A.- Por el
+                    simple retraso en el pago de uno o más instalamentos por
+                    pagar del título valor o documento otorgado por EL DEUDOR a
+                    favor de EL ACREEDOR. En este caso, bastará EL ACREEDOR
+                    presentar ante el respectivo Juez, este documento de prenda
+                    y otros títulos valores o documentos en que consten las
+                    deudas correspondientes. B.- Por no poner a disposición de
+                    EL ACREEDOR el vehículo dado en prenda dentro de las 24
+                    horas siguientes a la comunicación fehaciente, dirigida a la
+                    residencia registrada ante EL ACREEDOR por EL DEUDOR, en la
+                    cual solicita la presentación del automotor pignorado para
+                    su inspección. Y C.- Por incumplimiento de cualquiera de las
+                    obligaciones contraídas en el presente contrato.<br></br>{' '}
+                    Todo lo anterior sin menoscabo de las acciones civiles y
+                    penales a que tenga derecho EL ACREEDOR. PARÁGRAFO: No
+                    obstante el vencimiento establecido para la obligación
+                    asegurada, la Prenda conservará su vigencia mientras existan
+                    obligaciones pendientes de pago, sean directas o indirectas
+                    a cargo de EL DEUDOR y a favor de EL ACREEDOR y mientras
+                    esta no cancele en forma expresa y escrita el gravamen
+                    prendario que por medio de este contrato se constituye.
+                    SÉPTIMA: Son obligaciones especiales de EL DEUDOR: a) Pagar
+                    la totalidad de los gastos originados con ocasión la prenda
+                    del vehículo y del cobro, así como los impuestos de timbre,
+                    papel sellado que cause el contrato, gastos de matrícula,
+                    licencia de circulación, placas, registro de la prenda, etc.
+                    B) Pagar la totalidad de las sumas que resulten de la
+                    imposición de multas y sanciones por infracciones de policía
+                    o de tránsito, indemnizaciones a terceros por daños
+                    ocasionados en el manejo del vehículo y en general, la
+                    totalidad de los gastos que en una u otra forma puedan
+                    derivarse del vehículo objeto de la prenda. C) Permitir al
+                    ACREEDOR el derecho de inspección sobre el estado del
+                    vehículo dado en prenda, para cuyo efecto presentará la
+                    motocicleta en el sitio que indique EL ACREEDOR, cada vez
+                    que este así lo requieran. D) Mantener en perfecto estado de
+                    funcionamiento ejecutando a su costa las revisiones
+                    periódicas y las reparaciones necesarias. E) Informar al
+                    ACREEDOR, cualquier cambio de domicilio o residencia dentro
+                    de los 10 días siguientes a la fecha en que se realice. F)
+                    EL DEUDOR está obligado a gestionar lo pertinente de este
+                    contrato ante la respectiva Oficina de Tránsito, debiendo
+                    entregar al ACREEDOR fotocopia de la Tarjeta de Propiedad en
+                    que obre la misma constancia y entregar el original del
+                    presente documento de prenda debidamente sellado por la
+                    Oficina de Tránsito respectiva. OCTAVA: En caso de mora de
+                    EL DEUDOR en el pago de cualquiera de las cuotas o de su
+                    interés, o si usare el vehículo a juicio de EL ACREEDOR en
+                    forma prejudicial o peligrosa a sus intereses, o si la
+                    motocicleta fuere perseguida judicialmente, por vía
+                    administrativa o por terceros, o si causaren daños a
+                    terceros con el vehículo, y en general si EL DEUDOR dejare
+                    de cumplir cualquiera de las obligaciones a su cargo
+                    derivadas del presente contrato, podrá EL ACREEDOR proceder
+                    a exigir el pago de la totalidad de los saldos pendientes,
+                    sin consideración a los plazos convenidos. De optar EL
+                    ACREEDOR por la facultad anterior, será obligación de EL
+                    DEUDOR restituir inmediatamente el vehículo, y en caso
+                    contrario, podrá EL ACREEDOR tomarlo en cualquier lugar que
+                    se encuentre bajo la responsabilidad y a costa del
+                    comprador, en tanto las autoridades judiciales resuelvan.
+                    NOVENA: No podrá EL DEUDOR oponerse en ningún caso a la toma
+                    del vehículo, en forma alguna, ni ejercitar retención sobre
+                    el mismo, ni alegar u oponerse por mejoras, reparaciones,
+                    adiciones, etc., ya que a éstas se extiende la prenda. Para
+                    los efectos anteriores podrá EL ACREEDOR obrar por si, o
+                    recurrir a las autoridades judiciales, administrativas o de
+                    circulación, para que mediante la simple presentación de
+                    este documento, y sin necesidad de acompañar otra prueba le
+                    presenten la 25/7/24, 12:13 p.m. 1/2 protección para
+                    recuperar la tenencia del vehículo mencionado. DECIMA: Sin
+                    perjuicio de otras acciones civiles y penales podrá EL
+                    ACREEDOR tomar las medidas preventivas que considere
+                    necesarias para garantizar el pago de los perjuicios
+                    causados haciendo efectivo para ello los títulos valores o
+                    documentos aceptados por EL DEUDOR, hasta la concurrencia
+                    del valor de los créditos. Y en el evento de que el valor
+                    comercial del vehículo no cubra lo adeudado, EL ACREEDOR con
+                    el título valor (pagaré) podrá perseguir otros bienes hasta
+                    la cancelación total de las deudas. DECIMA PRIMERA: EL
+                    DEUDOR queda facultado para cancelar el total de la
+                    obligación u obligaciones en cualquier tiempo antes del
                     vencimiento de la última cuota, mediante pago del saldo de
                     la deuda y los intereses causados hasta la fecha de dicho
                     pago. DECIMA SEGUNDA: El vehículo pignorado deberá
@@ -337,8 +334,8 @@ export default function TreplacePladgeWithoutCreditorTenure() {
                       fontSize: '10px',
                     }}
                   >
-                    Para constancia se firma en MANIZALES, el día 6 de Abril de 2024.
-
+                    Para constancia se firma en MANIZALES, el día 6 de Abril de
+                    2024.
                   </TableCell>
                 </tr>
                 <Box
@@ -351,12 +348,11 @@ export default function TreplacePladgeWithoutCreditorTenure() {
                   <Table style={{ marginRight: '2px' }}>
                     <tr>
                       <TableCell sx={{ padding: '8px', fontSize: '10px' }}>
-                        
                         <br />
                         <span style={{ marginRight: '20px' }}>
                           {' '}
                           {/* Reducido el margen para adaptarse mejor */}
-                          ACREEDOR PRENDARIO 
+                          ACREEDOR PRENDARIO
                         </span>
                         <br />
                         SUZUKI MOTOR DE COLOMBIA S.A
@@ -367,12 +363,10 @@ export default function TreplacePladgeWithoutCreditorTenure() {
                   <Table>
                     <tr>
                       <TableCell sx={{ padding: '8px', fontSize: '10px' }}>
-                        
                         <span style={{ marginRight: '20px' }}>
                           {' '}
                           {/* Reducido el margen para adaptarse mejor */}
                           DEUDOR PRENDARIO
-
                         </span>
                         <br />
                         <span style={{ marginRight: '20px' }}>
@@ -423,7 +417,6 @@ export default function TreplacePladgeWithoutCreditorTenure() {
                   </Table>
                 </Box>
                 {/* segundo */}
-                
               </tbody>
             </Table>
             <table>
@@ -440,6 +433,14 @@ export default function TreplacePladgeWithoutCreditorTenure() {
             sx={{ border: '1px solid blue' }}
           >
             IMPRIMIR
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            component={Link}
+            to={`/viewGenerationCredits/viewGenerateFormats/${searchTerm}`}
+          >
+            Volver
           </Button>
         </CardActions>
       </Grid>
