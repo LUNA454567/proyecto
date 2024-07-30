@@ -371,7 +371,7 @@ export default function TPagareFinaval() {
                     <b>PARÁGRAFO:</b> La <b>VENDEDORA</b> en el evento anterior
                     y a su juicio podrá pedir la resolución del <b>CONTRATO</b>{' '}
                     o el cumplimiento de la obligación, pero en ambos casos el{' '}
-                    <b>COMPRADOR</b> se obliga a pagar a laVENDEDORA como{' '}
+                    <b>COMPRADOR</b> se obliga a pagar a la VENDEDORA como{' '}
                     <b>CLAUSULA PENAL</b> por el incumplimiento, una suma de
                     dinero igual a la cuota inicial, más las ya pagadas. Así
                     mismo se conviene que el pago de la <b>CLAUSULA PENAL</b> no

@@ -83,7 +83,6 @@ export default function ScrollableTabsButtonAuto() {
         <Tab label="COMPRAVENTA" />
         <Tab label="ACTA DE ENTREGA" />
         <Tab label="CONFIRMACION DE FACTURA" />
-        <Tab component={Link} to="/viewGenerateCredits" label="REGRESAR" />
       </Tabs>
       <TabPanel value={value} index={0}>
         <TPagareFinaval />

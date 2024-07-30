@@ -15,6 +15,8 @@ import { useParams } from 'react-router-dom';
 import numeroATexto from '../../hooks/numeroATexto';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
+import Input from '@mui/joy/Input';
+import Stack from '@mui/joy/Stack';
 
 export default function TreplacePladgeWithoutCreditorTenure() {
   const { id } = useParams();
@@ -95,44 +97,141 @@ export default function TreplacePladgeWithoutCreditorTenure() {
       <Grid item xs={12}>
         <Box>
           <tr>
-            <Table borderAxis={borderAxis}>
+            <Table borderAxis={borderAxis} style={{ fontSize: '12px' }}>
               <tbody>
-                <tr style={{ textAlign: 'center ', fontSize: '10px' }}>
+                <tr>
                   <td>NOMBRE DEL REPRESENTANTE LEGAL</td>
                   <td>NÚMERO DE CÉDULA</td>
                   <td>CIUDAD DE EXPEDICIÓN</td>
                   <td></td>
                 </tr>
-                <tr style={{ textAlign: 'center ', fontSize: '10px' }}>
-                  <td>
-                    <input
-                      type="text"
-                      name="nameLegalRepresentative"
-                      value={formData.nameLegalRepresentative}
-                      onChange={handleInputChange}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      name="idNumber"
-                      value={formData.idNumber}
-                      onChange={handleInputChange}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      name="cityExpedition"
-                      value={formData.cityExpedition}
-                      onChange={handleInputChange}
-                    />
-                  </td>
-                  <td>
-                    <button onClick={handleClearFormData}>
-                      <FontAwesomeIcon icon={faTrashCan} />
-                    </button>
-                  </td>
+                <tr style={{ textAlign: 'center ', fontSize: '8px' }}>
+                  <tr>
+                    <td>
+                      <Stack direction="row" spacing={5}>
+                        <Grid item xs={12} sm={3} md={4}>
+                          <Input
+                            size="sm"
+                            type="text"
+                            name="nameLegalRepresentative"
+                            value={formData.nameLegalRepresentative}
+                            onChange={handleInputChange}
+                            variant="soft"
+                            fullWidth
+                            sx={{
+                              '--Input-radius': '0px',
+                              borderBottom: '2px solid',
+                              borderColor: 'neutral.outlinedBorder',
+                              '&:hover': {
+                                borderColor: 'neutral.outlinedHoverBorder',
+                              },
+                              '&::before': {
+                                border:
+                                  '1px solid var(--Input-focusedHighlight)',
+                                transform: 'scaleX(0)',
+                                left: 0,
+                                right: 0,
+                                bottom: '-2px',
+                                top: 'unset',
+                                transition:
+                                  'transform .15s cubic-bezier(0.1,0.9,0.2,1)',
+                                borderRadius: 0,
+                              },
+                              '&:focus-within::before': {
+                                transform: 'scaleX(1)',
+                              },
+                            }}
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4}>
+                          <Input
+                            type="text"
+                            name="idNumber"
+                            value={formData.idNumber}
+                            onChange={handleInputChange}
+                            variant="soft"
+                            fullWidth
+                            sx={{
+                              '--Input-radius': '0px',
+                              borderBottom: '2px solid',
+                              borderColor: 'neutral.outlinedBorder',
+                              '&:hover': {
+                                borderColor: 'neutral.outlinedHoverBorder',
+                              },
+                              '&::before': {
+                                border:
+                                  '1px solid var(--Input-focusedHighlight)',
+                                transform: 'scaleX(0)',
+                                left: 0,
+                                right: 0,
+                                bottom: '-2px',
+                                top: 'unset',
+                                transition:
+                                  'transform .15s cubic-bezier(0.1,0.9,0.2,1)',
+                                borderRadius: 0,
+                              },
+                              '&:focus-within::before': {
+                                transform: 'scaleX(1)',
+                              },
+                            }}
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4}>
+                          <Input
+                            type="text"
+                            name="cityExpedition"
+                            value={formData.cityExpedition}
+                            onChange={handleInputChange}
+                            variant="soft"
+                            fullWidth
+                            sx={{
+                              '--Input-radius': '0px',
+                              borderBottom: '2px solid',
+                              borderColor: 'neutral.outlinedBorder',
+                              '&:hover': {
+                                borderColor: 'neutral.outlinedHoverBorder',
+                              },
+                              '&::before': {
+                                border:
+                                  '1px solid var(--Input-focusedHighlight)',
+                                transform: 'scaleX(0)',
+                                left: 0,
+                                right: 0,
+                                bottom: '-2px',
+                                top: 'unset',
+                                transition:
+                                  'transform .15s cubic-bezier(0.1,0.9,0.2,1)',
+                                borderRadius: 0,
+                              },
+                              '&:focus-within::before': {
+                                transform: 'scaleX(1)',
+                              },
+                            }}
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4}>
+                          <Button
+                            onClick={handleClearFormData}
+                            variant="contained"
+                            fullWidth
+                            startIcon={<FontAwesomeIcon icon={faTrashCan} />}
+                            sx={{
+                              backgroundColor: '#6aa6e2', // Azul claro
+                              '&:hover': {
+                                backgroundColor: '#87ceeb', // Azul claro más oscuro
+                              },
+                              color: 'black', // Color de la letra y del icono
+                              '& .MuiButton-startIcon': {
+                                color: 'black', // Asegura que el icono sea negro
+                              },
+                            }}
+                          >
+                            limpiar
+                          </Button>
+                        </Grid>
+                      </Stack>
+                    </td>
+                  </tr>
                 </tr>
               </tbody>
             </Table>
@@ -160,14 +259,14 @@ export default function TreplacePladgeWithoutCreditorTenure() {
             style={{
               textAlign: 'center',
               fontSize: '15px',
-              border: '2px solid red',
+              // border: '2px solid red',
             }}
           >
             <Box
               style={{
                 textAlign: 'center',
                 fontSize: '15px',
-                border: '2px solid red',
+                // border: '2px solid red',
               }}
             >
               <h2>
@@ -446,25 +545,25 @@ export default function TreplacePladgeWithoutCreditorTenure() {
                         <span style={{ marginRight: '20px' }}>
                           {' '}
                           {/* Reducido el margen para adaptarse mejor */}
-                          NOMBRE:____________________________________
+                          NOMBRE:_________________________________
                         </span>
                         <br />
                         <span style={{ marginRight: '20px' }}>
                           {' '}
                           {/* Reducido el margen para adaptarse mejor */}
-                          CEDULA:_____________________________________
+                          CEDULA:__________________________________
                         </span>
                         <br />
                         <span style={{ marginRight: '20px' }}>
                           {' '}
                           {/* Reducido el margen para adaptarse mejor */}
-                          DIRECCIÓN:__________________________________
+                          DIRECCIÓN:_______________________________
                         </span>
                         <br />
                         <span style={{ marginRight: '20px' }}>
                           {' '}
                           {/* Reducido el margen para adaptarse mejor */}
-                          TEL:_________________________________________
+                          TEL:______________________________________
                         </span>
                       </TableCell>
                       <TableCell sx={{ padding: '8px', fontSize: '10px' }}>
@@ -508,7 +607,6 @@ export default function TreplacePladgeWithoutCreditorTenure() {
           >
             IMPRIMIR
           </Button>
-          
         </CardActions>
       </Grid>
     </>
