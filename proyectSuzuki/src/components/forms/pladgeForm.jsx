@@ -61,7 +61,7 @@ export default function FormPropsTextFieldsPladgeGeneration({
               required
               value={nameLegalRepresentative}
               onChange={(e) => {
-                const input = e.target.value;
+                const input = e.target.value.toUpperCase();
                 if (/^[a-zA-Z\s]*$/.test(input)) {
                   setNameLegalRepresentative(input);
                 }
@@ -79,7 +79,7 @@ export default function FormPropsTextFieldsPladgeGeneration({
               required
               value={idNumber}
               onChange={(e) => {
-                const input = e.target.value;
+                const input = e.target.value.toUpperCase();
                 if (/^\d*$/.test(input)) {
                   setIdNumber(input);
                 }
@@ -95,7 +95,7 @@ export default function FormPropsTextFieldsPladgeGeneration({
               required
               value={cityExpedition}
               onChange={(e) => {
-                const input = e.target.value;
+                const input = e.target.value.toUpperCase();
                 if (/^[a-zA-Z\s]*$/.test(input)) {
                   setCityExpedition(input);
                 }
