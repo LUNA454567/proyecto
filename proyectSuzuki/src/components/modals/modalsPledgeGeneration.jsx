@@ -21,7 +21,11 @@ const style = {
   pb: 3,
 };
 
-export default function ModalPledge({ openModal, handleCancel, handleShowAdditionalView }) {
+export default function ModalPledge({
+  openModal,
+  handleCancel,
+  handleShowAdditionalView,
+}) {
   const [open, setOpen] = useState(openModal);
 
   useEffect(() => {
@@ -42,7 +46,10 @@ export default function ModalPledge({ openModal, handleCancel, handleShowAdditio
       aria-describedby="parent-modal-description"
     >
       <Box sx={{ ...style }}>
-        <Box component="section" sx={{ p: 0.1, fontSize:'12px', textAlign:'center' }}>
+        <Box
+          component="section"
+          sx={{ p: 0.1, fontSize: '12px', textAlign: 'center' }}
+        >
           <h2>DATOS DEL REPRESENTANTE LEGAL PARA LA PRENDA</h2>
           <IconButton
             aria-label="close"
@@ -57,7 +64,7 @@ export default function ModalPledge({ openModal, handleCancel, handleShowAdditio
             <CloseIcon />
           </IconButton>
         </Box>
-        <Box component="section" sx={{ p: 2}}>
+        <Box component="section" sx={{ p: 2 }}>
           <FormPropsTextFieldsPladgeGeneration
             handleCancel={handleClose}
             handleShowAdditionalView={handleShowAdditionalView}

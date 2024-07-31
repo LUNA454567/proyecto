@@ -18,7 +18,7 @@ import ModalPledge from '../modals/modalsPledgeGeneration';
 import ViewReplaceFormPladgeWithoutCreditorTenure from '../../views/viewReplaceFormPladgeWithoutCreditorTenure';
 
 function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+  const { children, value, index, isModalOpen, handleCloseModal, handleShowAdditionalView,showAdditionalView } = props;
 
   return (
     <div
@@ -26,11 +26,18 @@ function TabPanel(props) {
       hidden={value !== index}
       id={`scrollable-auto-tabpanel-${index}`}
       aria-labelledby={`scrollable-auto-tab-${index}`}
-      {...other}
+      
     >
       {value === index && (
         <Box sx={{ p: 3 }}>
           <Typography>{children}</Typography>
+          {/* Agrega los componentes que quieres mostrar en el tab panel */}
+          <ModalPledge
+            openModal={isModalOpen}
+            handleCancel={handleCloseModal}
+            handleShowAdditionalView={handleShowAdditionalView}
+          />
+          {showAdditionalView && <ViewReplaceFormPladgeWithoutCreditorTenure />}
         </Box>
       )}
     </div>
@@ -42,26 +49,30 @@ export default function ScrollableTabsButtonAuto() {
   const theme = useTheme();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showAdditionalView, setShowAdditionalView] = useState(false);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [showAdditionalView, setShowAdditionalView] = useState(false);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
-    console.log('Cerrando modal...');
     setIsModalOpen(false);
   };
 
   const handleShowAdditionalView = () => {
-    console.log('Mostrando vista adicional...');
     setShowAdditionalView(true);
   };
+
+  const handleButtonClick = () => {
+    handleOpenModal();
+    handleShowAdditionalView();
+  };
+
 
   return (
     <Box sx={{ width: '100%', bgcolor: 'background.paper', margin: 0 }}>

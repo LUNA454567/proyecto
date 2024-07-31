@@ -1,31 +1,26 @@
 import React, { useRef, useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/joy/Grid';
-import '../style/printStyles.css'; // Asegúrate de importar el archivo CSS aquí
-import TableBody from '@mui/material/TableBody';
 import Table from '@mui/joy/Table';
 import TableCell from '@mui/material/TableCell';
 import { TableContainer } from '@mui/material';
 import CardActions from '@mui/material/CardActions';
 import { useReactToPrint } from 'react-to-print';
 import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
-import { fetchBillByNumber } from '../../services/apiService';
 import { useParams } from 'react-router-dom';
+import { fetchBillByNumber } from '../../services/apiService';
 import numeroATexto from '../../hooks/numeroATexto';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
-import Input from '@mui/joy/Input';
-import Stack from '@mui/joy/Stack';
+import { faArrowsLeftRightToLine } from '@fortawesome/free-solid-svg-icons';
+import ModalPledge from '../modals/modalsPledgeGeneration';
 
 export default function TreplacePladgeWithoutCreditorTenure() {
   const { id } = useParams();
-  const contentRef = useRef(); // Crear el ref
+  const contentRef = useRef();
   const [borderAxis] = useState('xBetween');
   const [billData, setBillData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const searchTerm = 'searchTerm';
   const [pagareWords, setPagarerWords] = useState('');
 
   const [formData, setFormData] = useState({
@@ -67,6 +62,29 @@ export default function TreplacePladgeWithoutCreditorTenure() {
     localStorage.setItem('formData', JSON.stringify(formData));
   }, [formData]);
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+  };
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    // Actualiza los datos del formulario desde el local storage
+    const savedFormData = localStorage.getItem('formData');
+    if (savedFormData) {
+      setFormData(JSON.parse(savedFormData));
+    }
+  };
+
   const handleClearFormData = () => {
     setFormData({
       nameLegalRepresentative: '',
@@ -76,12 +94,9 @@ export default function TreplacePladgeWithoutCreditorTenure() {
     localStorage.removeItem('formData');
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: value,
-    }));
+  const handleButtonClick = () => {
+    handleClearFormData();
+    handleOpenModal();
   };
 
   if (loading) {
@@ -96,157 +111,45 @@ export default function TreplacePladgeWithoutCreditorTenure() {
     <>
       <Grid item xs={12}>
         <Box>
-          <tr>
-            <Table borderAxis={borderAxis} style={{ fontSize: '12px' }}>
-              <tbody>
-                <tr>
-                  <td>NOMBRE DEL REPRESENTANTE LEGAL</td>
-                  <td>NÚMERO DE CÉDULA</td>
-                  <td>CIUDAD DE EXPEDICIÓN</td>
-                  <td></td>
-                </tr>
-                <tr style={{ textAlign: 'center ', fontSize: '8px' }}>
-                  <tr>
-                    <td>
-                      <Stack direction="row" spacing={5}>
-                        <Grid item xs={12} sm={3} md={4}>
-                          <Input
-                            size="sm"
-                            type="text"
-                            name="nameLegalRepresentative"
-                            value={formData.nameLegalRepresentative}
-                            onChange={handleInputChange}
-                            variant="soft"
-                            fullWidth
-                            sx={{
-                              '--Input-radius': '0px',
-                              borderBottom: '2px solid',
-                              borderColor: 'neutral.outlinedBorder',
-                              '&:hover': {
-                                borderColor: 'neutral.outlinedHoverBorder',
-                              },
-                              '&::before': {
-                                border:
-                                  '1px solid var(--Input-focusedHighlight)',
-                                transform: 'scaleX(0)',
-                                left: 0,
-                                right: 0,
-                                bottom: '-2px',
-                                top: 'unset',
-                                transition:
-                                  'transform .15s cubic-bezier(0.1,0.9,0.2,1)',
-                                borderRadius: 0,
-                              },
-                              '&:focus-within::before': {
-                                transform: 'scaleX(1)',
-                              },
-                            }}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4}>
-                          <Input
-                            type="text"
-                            name="idNumber"
-                            value={formData.idNumber}
-                            onChange={handleInputChange}
-                            variant="soft"
-                            fullWidth
-                            sx={{
-                              '--Input-radius': '0px',
-                              borderBottom: '2px solid',
-                              borderColor: 'neutral.outlinedBorder',
-                              '&:hover': {
-                                borderColor: 'neutral.outlinedHoverBorder',
-                              },
-                              '&::before': {
-                                border:
-                                  '1px solid var(--Input-focusedHighlight)',
-                                transform: 'scaleX(0)',
-                                left: 0,
-                                right: 0,
-                                bottom: '-2px',
-                                top: 'unset',
-                                transition:
-                                  'transform .15s cubic-bezier(0.1,0.9,0.2,1)',
-                                borderRadius: 0,
-                              },
-                              '&:focus-within::before': {
-                                transform: 'scaleX(1)',
-                              },
-                            }}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4}>
-                          <Input
-                            type="text"
-                            name="cityExpedition"
-                            value={formData.cityExpedition}
-                            onChange={handleInputChange}
-                            variant="soft"
-                            fullWidth
-                            sx={{
-                              '--Input-radius': '0px',
-                              borderBottom: '2px solid',
-                              borderColor: 'neutral.outlinedBorder',
-                              '&:hover': {
-                                borderColor: 'neutral.outlinedHoverBorder',
-                              },
-                              '&::before': {
-                                border:
-                                  '1px solid var(--Input-focusedHighlight)',
-                                transform: 'scaleX(0)',
-                                left: 0,
-                                right: 0,
-                                bottom: '-2px',
-                                top: 'unset',
-                                transition:
-                                  'transform .15s cubic-bezier(0.1,0.9,0.2,1)',
-                                borderRadius: 0,
-                              },
-                              '&:focus-within::before': {
-                                transform: 'scaleX(1)',
-                              },
-                            }}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4}>
-                          <Button
-                            onClick={handleClearFormData}
-                            variant="contained"
-                            fullWidth
-                            startIcon={<FontAwesomeIcon icon={faTrashCan} />}
-                            sx={{
-                              backgroundColor: '#6aa6e2', // Azul claro
-                              '&:hover': {
-                                backgroundColor: '#87ceeb', // Azul claro más oscuro
-                              },
-                              color: 'black', // Color de la letra y del icono
-                              '& .MuiButton-startIcon': {
-                                color: 'black', // Asegura que el icono sea negro
-                              },
-                            }}
-                          >
-                            limpiar
-                          </Button>
-                        </Grid>
-                      </Stack>
-                    </td>
-                  </tr>
-                </tr>
-              </tbody>
-            </Table>
-          </tr>
+          <Table borderAxis={borderAxis} style={{ fontSize: '12px' }}>
+            <tbody>
+              <tr style={{ textAlign: 'center ', fontSize: '10px' }}>
+                <td>NOMBRE DEL REPRESENTANTE LEGAL:</td>
+                <td>NÚMERO DE CEDULA</td>
+                <td>CÉDULA DE EXPEDICIÓN</td>
+                <td></td>
+              </tr>
+              <tr style={{ textAlign: 'center ', fontSize: '11px' }}>
+                <td>{formData.nameLegalRepresentative}</td>
+                <td>{formData.idNumber}</td>
+                <td>{formData.cityExpedition}</td>
+                <td>
+                  <Button
+                    onClick={handleButtonClick}
+                    variant="contained"
+                    startIcon={
+                      <FontAwesomeIcon icon={faArrowsLeftRightToLine} />
+                    }
+                    sx={{
+                      fontSize: '10.5px',
+                      backgroundColor: '#6aa6e2',
+                      '&:hover': {
+                        backgroundColor: '#87ceeb',
+                      },
+                      color: 'black',
+                      '& .MuiButton-startIcon': {
+                        color: 'black',
+                      },
+                    }}
+                  >
+                    CAMBIAR
+                  </Button>
+                </td>
+              </tr>
+            </tbody>
+          </Table>
         </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          {/* <Button
-            variant="text"
-            color="primary"
-            component={Link}
-            to="/viewGenerationCredits/viewGenerateFormats/5891015543"
-          >
-            VOLVER
-          </Button> */}
-        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}></Box>
         <Box
           style={{
             margin: '1px',
@@ -259,21 +162,18 @@ export default function TreplacePladgeWithoutCreditorTenure() {
             style={{
               textAlign: 'center',
               fontSize: '15px',
-              // border: '2px solid red',
             }}
           >
             <Box
               style={{
                 textAlign: 'center',
                 fontSize: '15px',
-                // border: '2px solid red',
               }}
             >
               <h2>
                 <b>PRENDA SIN TENENCIA DEL ACREEDOR</b>
               </h2>
             </Box>
-
             <Table aria-label="basic table">
               <thead></thead>
               <tbody>
@@ -317,13 +217,8 @@ export default function TreplacePladgeWithoutCreditorTenure() {
                     especifica y detalla a continuación:
                   </TableCell>
                 </tr>
-
                 <tr>
-                  <Table
-                    borderAxis={borderAxis}
-
-                    // style={{ border: '4px dashed purple', width: '100%' }}
-                  >
+                  <Table>
                     <tbody>
                       <tr style={{ textAlign: 'center ', fontSize: '10px' }}>
                         <td>CERTIFICADO INDIVIDUAL:</td>
@@ -511,16 +406,18 @@ export default function TreplacePladgeWithoutCreditorTenure() {
                     {billData[0].FECHA_PAGARE}
                   </TableCell>
                 </tr>
-                <Box
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    // border: '1px dashed red',
-                  }}
-                >
-                  <Table style={{ marginRight: '2px' }}>
+
+                <Table>
+                  <tbody>
                     <tr>
-                      <TableCell sx={{ padding: '8px', fontSize: '10px' }}>
+                      {/* Primera celda */}
+                      <TableCell
+                        sx={{
+                          padding: '8px',
+                          textAlign: 'justify',
+                          fontSize: '10px',
+                        }}
+                      >
                         <br />
                         <span style={{ marginRight: '20px' }}>
                           {' '}
@@ -531,10 +428,8 @@ export default function TreplacePladgeWithoutCreditorTenure() {
                         SUZUKI MOTOR DE COLOMBIA S.A
                         <br />
                       </TableCell>
-                    </tr>
-                  </Table>
-                  <Table>
-                    <tr>
+
+                      {/* Segunda celda al lado */}
                       <TableCell sx={{ padding: '8px', fontSize: '10px' }}>
                         <span style={{ marginRight: '20px' }}>
                           {' '}
@@ -587,14 +482,10 @@ export default function TreplacePladgeWithoutCreditorTenure() {
                         </Box>
                       </TableCell>
                     </tr>
-                  </Table>
-                </Box>
-                {/* segundo */}
+                  </tbody>
+                </Table>
               </tbody>
             </Table>
-            <table>
-              <TableBody></TableBody>
-            </table>
           </TableContainer>
         </Box>
       </Grid>
@@ -609,6 +500,8 @@ export default function TreplacePladgeWithoutCreditorTenure() {
           </Button>
         </CardActions>
       </Grid>
+
+      <ModalPledge openModal={isModalOpen} handleCancel={handleCloseModal} />
     </>
   );
 }
