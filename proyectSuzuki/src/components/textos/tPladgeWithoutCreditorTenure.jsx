@@ -10,8 +10,6 @@ import Button from '@mui/material/Button';
 import { useParams } from 'react-router-dom';
 import { fetchBillByNumber } from '../../services/apiService';
 import numeroATexto from '../../hooks/numeroATexto';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowsLeftRightToLine } from '@fortawesome/free-solid-svg-icons';
 import ModalPledge from '../modals/modalsPledgeGeneration';
 
 export default function TreplacePladgeWithoutCreditorTenure() {
@@ -127,14 +125,12 @@ export default function TreplacePladgeWithoutCreditorTenure() {
                   <Button
                     onClick={handleButtonClick}
                     variant="contained"
-                    startIcon={
-                      <FontAwesomeIcon icon={faArrowsLeftRightToLine} />
-                    }
+                    
                     sx={{
                       fontSize: '10.5px',
-                      backgroundColor: '#6aa6e2',
+                      backgroundColor: '#f97930',
                       '&:hover': {
-                        backgroundColor: '#87ceeb',
+                        backgroundColor: '#ff8a53',
                       },
                       color: 'black',
                       '& .MuiButton-startIcon': {
